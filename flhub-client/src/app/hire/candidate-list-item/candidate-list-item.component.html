@@ -1,0 +1,19 @@
+<mat-card>
+  <mat-card-header>
+    <img *ngIf="profile.portrait_50" mat-card-avatar [src]="profile.portrait_50">
+    <mat-card-title>{{ profile.name }}</mat-card-title>
+    <mat-card-subtitle>{{ profile.title }}</mat-card-subtitle>
+    <div class="card-title-right">
+      <div>{{ profile.rate | currency }}</div>
+      <div *ngIf="profile.feedback">{{ profile.feedback }}</div>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+    <p>{{ profile.description }}</p>
+    <mat-chip-list>
+      <mat-chip *ngFor="let skill of profile.skills">{{ skill }}</mat-chip>
+    </mat-chip-list>
+  </mat-card-content>
+  <mat-card-footer>
+  </mat-card-footer>
+</mat-card>

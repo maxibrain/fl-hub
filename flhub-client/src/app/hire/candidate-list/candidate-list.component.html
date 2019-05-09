@@ -1,0 +1,6 @@
+<div *ngIf="(candidates$ | async).length; else noCandidates">
+  <app-candidate-list-item *ngFor="let candidate of candidates$ | async" [candidate]="candidate"></app-candidate-list-item>
+</div>
+<ng-template #noCandidates>
+  <p>No candidates</p>
+</ng-template>

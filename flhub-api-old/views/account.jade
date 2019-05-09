@@ -1,0 +1,44 @@
+extends layout
+
+mixin notification-settings-fields(settingsProp, label)
+  - var ns = (account.notificationSettings || {})[settingsProp] || {};
+  .panel.panel-default
+    .panel-heading
+      .checkbox
+        label
+          input(type='checkbox', name='notificationSettings["' + settingsProp + '"]["enabled"]', checked=ns.enabled) 
+          span= label
+    .panel-body
+      .form-group
+        label(for='ns-threashold-' + settingsProp) Job score threashold
+        input.form-control(type='number', name='notificationSettings["' + settingsProp + '"]["scoreThreashold"]', id='ns-threashold-' + settingsProp, value=ns.scoreThreashold)
+      .form-group
+        label(for='ns-schedule-' + settingsProp) Schedule
+        select.form-control(name='notificationSettings["' + settingsProp + '"]["schedule"]', id='ns-schedule-' + settingsProp)
+          option(value='immediately', selected) Immediately
+
+block content
+  if (!user.upwork)
+    a.btn.btn-primary(href='/auth/upwork?returnUrl=' + returnUrl) Log In with Upwork
+  else
+    a.btn.btn-primary(href='/auth/upwork?revoke&returnUrl=' + returnUrl) Log Out from Upwork
+  if (!user.freelancer)
+    a.btn.btn-primary(href='/auth/freelancer?returnUrl=' + returnUrl) Log In with Freelancer
+  else
+    a.btn.btn-primary(href='/auth/freelancer?revoke&returnUrl=' + returnUrl) Log Out from Freelancer
+  form#account-form(method='POST', action='/account')
+    .form-group
+      label(for='first-name') First name
+      input.form-control(type='text', name='firstName', id='first-name', value=account.firstName)
+    .form-group
+      label(for='last-name') Last name
+      input.form-control(type='text', name='lastName', id='last-name', value=account.lastName)
+    .form-group
+      label(for='email') E-mail address
+      input.form-control(type='text', name='emailAddress', id='email', value=account.emailAddress)
+    .form-group
+      label(for='phone') Phone number
+      input.form-control(type='text', name='phoneNumber', id='phone', value=account.phoneNumber)
+    +notification-settings-fields('email', 'E-Mail notifications')
+    +notification-settings-fields('sms', 'SMS notifications')
+    button.btn.btn-default(type='submit') Save

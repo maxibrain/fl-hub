@@ -1,0 +1,23 @@
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.justify-content-space-between {
+  justify-content: space-between;
+}
+
+input[type='number'] {
+  width: 100px;
+}
+
+::ng-deep .mat-form-field-infix {
+  width: 100px !important;
+}

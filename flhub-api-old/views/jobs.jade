@@ -1,0 +1,61 @@
+extends layout
+
+block scripts
+  script(src="/javascripts/jobs.js")
+
+block content
+  //-form.form-inline(method='GET', action='/jobs')
+    .form-group
+      label(for='query') Query
+      input.form-control(type='text', name='query', id='query', value=query.query)
+    .form-group
+      label(for='count') Count
+      input.form-control(type='text', name='count', id='count', value=query.count)
+    .form-group
+      label(for='scoreThreashold') Score Threashold
+      input.form-control(type='text', name='scoreThreashold', id='scoreThreashold', value=query.scoreThreashold)
+    button.btn.btn-default(type='submit') Show
+  //-hr
+  ul.list-group.job-list
+    each job, i in jobs
+      li.list-group-item.job
+        .row
+          .col-md-10.col-sm-9.col-xs-8
+            span
+              img(src="/images/" + job.provider + ".png", width=24)
+            span
+              a(href=job.url, target="_blank")= job.title
+          .col-md-2.col-sm-3.col-xs-4.text-right
+            span= (new Date(job.dateCreated * 1000)).toLocaleString()
+        .row
+          .col-md-10.col-sm-6.col-xs-6
+            span.badge.job-type= job.paymentBasis
+            - var budget = null;
+            - if (job.budget.minimum && job.budget.maximum) budget = job.budget.minimum.toString() + " - " + job.budget.maximum.toString();
+            - else if (!job.budget.minimum && job.budget.maximum) budget = job.budget.maximum.toString();
+            - else if (job.budget.minimum && !job.budget.maximum) budget = "min " + job.budget.minimum.toString();
+            - if (budget) { budget += " USD"; } else { budget = "N/A"; }
+            span.badge.job-budget= budget
+          .col-md-2.col-sm-6.col-xs-6
+            form.form-inline.text-right(method='POST', action='/jobs/rate', onsubmit='return vote(event);')
+              span.badge.score= job.totalScore.toFixed(1)
+              input(type='hidden', name='job', value=JSON.stringify(job))
+              .btn-group
+                button.btn.btn-xs.btn-success(type='submit', name='dir', value='up')
+                  span.glyphicon.glyphicon-thumbs-up(aria-hidden='true')
+                button.btn.btn-xs.btn-danger(type='submit', name='dir', value='down')
+                  span.glyphicon.glyphicon-thumbs-down(aria-hidden='true')
+        .row
+          .col-md-12
+            span= job.description
+        .row
+          .col-md-11.col-sm-11.col-xs-11
+            span Client:
+            span
+              span.glyphicon.glyphicon-usd(area-hidden='true')
+              span= (job.client.paymentVerified ? "VERIFIED" : "UNVERIFIED")
+            span
+              span.glyphicon.glyphicon-globe(area-hidden='true')
+              span= job.client.country
+          .col-md-1.col-sm-1.col-xs-1.text-right
+            a.small(href="#", onclick="return showJSON(event, '" + JSON.stringify(job) + "');") JSON

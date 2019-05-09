@@ -1,0 +1,123 @@
+<form *ngIf="calc$ | async; let calc" [formGroup]="salaryForm" ngxsForm="financies.salaryForm">
+  <h3>Salaries & Dividents</h3>
+  <mat-divider></mat-divider>
+  <h4>Income</h4>
+  <div class="flex flex-column">
+    <div>
+      <mat-form-field>
+        <span matPrefix>$</span>
+        <input matInput type="number" placeholder="Income" formControlName="income" required />
+      </mat-form-field>
+    </div>
+    <div class="flex flex-row justify-content-space-between">
+      <div *ngFor="let exStep of salaryForm.controls.exchangeSteps.controls; index as i" [formGroup]="exStep">
+        <h5>Exchange step #{{ i + 1 }}</h5>
+        <div>
+          <mat-form-field>
+            <input matInput type="number" placeholder="Exchange rate" formControlName="rate" required />
+          </mat-form-field>
+        </div>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Exchanged
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ calc.exchangeSteps[i] | currency: 'UAH' }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div>
+            <mat-form-field>
+              <input matInput type="number" placeholder="Exchange part" formControlName="part" required />
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field>
+              <input matInput type="number" placeholder="Exchange fee" formControlName="fee" required />
+            </mat-form-field>
+          </div>
+        </mat-expansion-panel>
+      </div>
+    </div>
+    <h4>Tax</h4>
+    <div>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Tax
+          </mat-panel-title>
+          <mat-panel-description>
+            {{ calc.tax | currency: 'UAH' }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-form-field>
+          <input matInput type="number" placeholder="Tax rate" formControlName="taxRate" required />
+        </mat-form-field>
+        <div>Taxable: {{ calc.taxableIncome | currency: 'UAH' }}</div>
+      </mat-expansion-panel>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+  <h4>Salary</h4>
+  <div class="flex flex-column">
+    <div>
+      <mat-form-field>
+        <input matInput type="number" placeholder="Exchange Rate" formControlName="salaryExchangeRate" required />
+      </mat-form-field>
+    </div>
+    <h5>Collaborators</h5>
+    <div
+      class="flex flex-row justify-content-space-between"
+      *ngFor="let worker of workersFormArray.controls; index as i"
+      [formGroup]="worker"
+    >
+      <mat-form-field>
+        <span matPrefix>{{ i + 1 }}.</span>
+        <input matInput type="text" placeholder="Name" formControlName="name" required />
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="number" placeholder="Hour rate" formControlName="rate" required />
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="number" placeholder="Hours" formControlName="hours" required />
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="number" placeholder="Salary transfer fee" formControlName="fee" required />
+      </mat-form-field>
+      <span>Salary: {{ calc.salary[worker.value.name] | currency: 'UAH' }}</span>
+      <button mat-icon-button color="warn" type="button" (click)="removeWorker(worker)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    <div>
+      <button mat-button type="button" (click)="addWorker()">
+        Add worker
+      </button>
+    </div>
+  </div>
+
+  <h4>Dividents</h4>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Total dividents
+      </mat-panel-title>
+      <mat-panel-description>
+        {{ calc.dividents | currency: 'UAH' }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <mat-form-field>
+      <input matInput type="number" placeholder="Dividents transfer fee" formControlName="dividentsFee" required />
+    </mat-form-field>
+  </mat-expansion-panel>
+
+  <h4>DEBUG</h4>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        DEBUG
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div>{{ calc | json }}</div>
+  </mat-expansion-panel>
+</form>

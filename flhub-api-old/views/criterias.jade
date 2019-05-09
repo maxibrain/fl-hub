@@ -1,0 +1,34 @@
+extends layout
+
+mixin criteria-fields(criteria)
+  .col-md-3.form-group
+    input.form-control(type='text', name='name', id='criteria-name-' + criteria._id, value=criteria.name)
+  .col-md-4.form-group
+    textarea.form-control(name='expression', id='criteria-expr-' + criteria._id)= criteria.expression
+  .col-md-1.form-group
+    input.form-control(type='text', name='multiplier', id='criteria-mltp-' + criteria._id, value=criteria.multiplier)
+  .col-md-1.form-group
+    input.form-control(type='text', name='icon', id='criteria-icon-' + criteria._id, value=criteria.icon)
+  .col-md-1
+    input(type='checkbox', name='showName', id='criteria-showname-' + criteria._id, checked=criteria.showName)
+
+block content
+  .criterias
+    .row
+      .col-md-3 Name 
+      .col-md-4 Expression
+      .col-md-1 Multiplier 
+      .col-md-1 Icon
+      .col-md-1 Show name
+      .col-md-2 Actions
+    each criteria in criterias
+      .row.criteria
+        form.form-inline.criteria-form(method='POST', action='/criterias/' + criteria._id)
+          +criteria-fields(criteria)
+          .col-md-2
+            button.btn.btn-default(type='submit') Update
+    .row.criteria
+      form#new-criteria-form.form-inline.criteria-form(method='POST', action='/criterias')
+        +criteria-fields({name: '', expression: '', multiplier: 1.0, icon: 'usd'})
+        .col-md-2
+          button.btn.btn-default(type='submit') Add

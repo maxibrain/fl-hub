@@ -1,0 +1,27 @@
+{
+    "manifest_version": 2,
+    "name": "FL Hub",
+    "description": "This extension allows the user to evaluate an UpWork Job.",
+    "version": "1.0",
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
+    "content_scripts": [
+        {
+          "matches": ["https://www.upwork.com/*"],
+          "js": ["lib/jquery-3.3.1.slim.min.js", "content.js"]
+        }
+      ],
+    "permissions": [
+        "https://www.upwork.com/*",
+        "declarativeContent",
+        "tabs",
+        "activeTab"
+    ],
+    "page_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    }
+}

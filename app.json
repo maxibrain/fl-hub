@@ -1,0 +1,48 @@
+{
+  "name": "fl-hub",
+  "scripts": {},
+  "env": {
+    "TYPEORM_CONNECTION": {
+      "required": true
+    },
+    "TYPEORM_DATABASE": {
+      "required": true
+    },
+    "TYPEORM_HOST": {
+      "required": true
+    },
+    "TYPEORM_USERNAME": {
+      "required": true
+    },
+    "TYPEORM_PASSWORD": {
+      "required": true
+    },
+    "TYPEORM_PORT": {
+      "required": true
+    },
+    "TYPEORM_SYNCHRONIZE": {
+      "required": true
+    },
+    "TYPEORM_LOGGING": {
+      "required": true
+    },
+    "TYPEORM_ENTITIES": {
+      "required": true
+    },
+    "TYPEORM_MIGRATIONS": {
+      "required": true
+    },
+    "UPWORK_CONSUMER_KEY": {
+      "required": true
+    },
+    "UPWORK_CONSUMER_SECRET": {
+      "required": true
+    },
+    "UPWORK_ACCESS_TOKEN": {
+      "required": false
+    },
+    "UPWORK_ACCESS_SECRET": {
+      "required": false
+    }
+  }
+}

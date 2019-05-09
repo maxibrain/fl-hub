@@ -1,0 +1,14 @@
+﻿.row
+  .col-md-11
+    a(href="#{job.url}")= job.title
+    span.badge.job-type= job.job_type
+    span.badge.job-budget= job.budget
+  .col-md-1
+    span.badge.score= job.totalScore
+.row
+  ul.job-score-breakdown
+    each score in job.scores
+      li.job-score
+        div(classes=['label', score.score >= 1 ? 'label-success' : 'label-danger'])
+          span(classes=['glyphicon', 'glyphicon-' + score.icon])
+          span.job-score-name= score.name
