@@ -10,7 +10,14 @@ import {
   createInitialCandidateStatusPatch,
   createCandidateStatusPatch,
 } from '../../entities';
-import { Candidate, fromProfile, CandidateDto, CandidateTracker, UpdateCandidateStatusDto, SearchCandidatesOptions } from '../../interfaces';
+import {
+  Candidate,
+  fromProfile,
+  CandidateDto,
+  CandidateTracker,
+  UpdateCandidateStatusDto,
+  SearchCandidatesOptions,
+} from '../../interfaces';
 
 @Injectable()
 export class CandidateService {
@@ -144,7 +151,7 @@ export class CandidateService {
 
     return await Promise.all(promises).then(arrayOfResults =>
       arrayOfResults
-        .reduce((acc, providers) => [...acc, ...providers.filter(p => !acc.map(a => a.id).includes(p.id))], initialProviders)
+        .reduce((acc, providers) => [...acc, ...providers.filter(p => acc.map(a => a.id).indexOf(p.id) < 0)], initialProviders)
         .sort((a, b) => a.id.localeCompare(b.id)),
     );
   }
