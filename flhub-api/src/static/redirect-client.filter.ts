@@ -1,5 +1,5 @@
 import { ArgumentsHost, Catch, HttpServer, Inject, NotFoundException, Logger } from '@nestjs/common';
-import { BaseExceptionFilter, HTTP_SERVER_REF } from '@nestjs/core';
+import { BaseExceptionFilter } from '@nestjs/core';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -9,7 +9,7 @@ const fileExtRx: RegExp = /\.[\w\d]+$/i;
 export class RedirectToClientFilter extends BaseExceptionFilter {
   private readonly clientRootPath: string;
 
-  constructor(@Inject(HTTP_SERVER_REF) applicationRef: HttpServer) {
+  constructor(applicationRef: HttpServer) {
     super(applicationRef);
     this.clientRootPath = path.resolve(process.env.PROJECT_ROOT, process.env.CLIENT_ROOT_PATH || '../flhub-client/dist/flhub-client');
     Logger.log(`Client root path=${this.clientRootPath}`, 'Environment');
