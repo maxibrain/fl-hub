@@ -10,10 +10,7 @@ export interface Candidate extends FreelancerProfile {
 export function fromProfile(p: FreelancerProfile): Candidate {
   return {
     ...p,
-    username: ((p.portrait_50 || '').match(/Users:([-_\w\d]+):PortraitUrl/) || [
-      '',
-      '',
-    ])[1],
+    username: ((p.portrait_50 || '').match(/Users:([-_\w\d]+):PortraitUrl/) || ['', ''])[1],
     link: 'https://www.upwork.com/freelancers/' + p.id,
   };
 }

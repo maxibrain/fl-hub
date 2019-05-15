@@ -2,30 +2,24 @@
   <h3>New Candidate Search</h3>
   <mat-divider></mat-divider>
   <mat-form-field>
-    <input matInput placeholder="Query" formControlName="query">
+    <input matInput placeholder="Query" formControlName="query" />
   </mat-form-field>
   <mat-form-field>
     <mat-chip-list #skillsList>
-      <mat-chip *ngFor="let skill of this.skills.value" [selectable]="selectable"
-                [removable]="removable" (removed)="removeSkill(skill)">
-        {{skill}}
+      <mat-chip *ngFor="let skill of this.skills.value" [selectable]="selectable" [removable]="removable" (removed)="removeSkill(skill)">
+        {{ skill }}
         <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
       </mat-chip>
-      <input placeholder="Skills"
-              [matChipInputFor]="skillsList"
-              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-              [matChipInputAddOnBlur]="addOnBlur"
-              (matChipInputTokenEnd)="addSkill($event)">
+      <input
+        placeholder="Skills"
+        [matChipInputFor]="skillsList"
+        [matChipInputAddOnBlur]="addOnBlur"
+        (matChipInputTokenEnd)="addSkill($event)"
+      />
     </mat-chip-list>
   </mat-form-field>
 
-  <mat-slider
-    thumbLabel
-    tickInterval="1"
-    min="3"
-    max="1000"
-    formControlName="maxRate">
-  </mat-slider>
+  <mat-slider thumbLabel tickInterval="1" min="3" max="1000" formControlName="maxRate"> </mat-slider>
 
   <button type="submit" mat-raised-button color="primary">Create</button>
 </form>

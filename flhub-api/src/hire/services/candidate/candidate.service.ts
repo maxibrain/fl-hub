@@ -69,9 +69,8 @@ export class CandidateService {
   }
 
   async get(searchName?: string): Promise<CandidateDto[]> {
-    const where = searchName ? { name: searchName } : {};
-    const searchQueries = await this.searchQueries.find({ where, select: ['id'] });
-    const trackers = await this.loadTrackers(searchQueries.map(s => s.id.toHexString()));
+    const searchQuery = await this.searchQueries.findOneOrFail({ where: { name: searchName }, select: ['id'] });
+    const trackers = await this.loadTrackers(searchQuery.id.toHexString());
     const profiles = await this.loadProfiles(trackers.map(t => t.profileId));
     return profiles.map(profile => ({
       profile,
@@ -79,7 +78,7 @@ export class CandidateService {
     }));
   }
 
-  async update(searchName: string) {
+  async update(searchName?: string) {
     const searchQuery = await this.searchQueries.findOneOrFail({ where: { name: searchName } });
     const profiles = await this.fetchAll(searchQuery.params);
     profiles.forEach(async profile => {
@@ -116,6 +115,7 @@ export class CandidateService {
       category2: options.category,
       paging: `0;${pageSize}`,
       rate: `[0 TO ${options.maxRate}]`,
+      loc: options.country,
     };
     const initialResult = await this.api.searchFreelancers(initialOptions);
 

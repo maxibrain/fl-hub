@@ -1,4 +1,4 @@
-import { NestFactory, HTTP_SERVER_REF } from '@nestjs/core';
+import { NestFactory, HttpAdapterHost } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
 import * as path from 'path';
 import * as dotEnv from 'dotenv';
@@ -12,12 +12,12 @@ async function bootstrap() {
     process.env.PROJECT_ROOT = path.resolve(__dirname, dots);
   }
   Logger.log(`PROJECT_ROOT=${process.env.PROJECT_ROOT}`, 'Environment');
-  if (!process.env.PROJECT_ROOT.endsWith('server')) {
+  if (!process.env.PROJECT_ROOT.endsWith('flhub-api')) {
     Logger.warn('PROJECT_ROOT should point to "server" folder. File pathes might be resolved incorrectly', 'Environment');
   }
   const app = await NestFactory.create(AppModule);
-  const httpRef = app.get(HTTP_SERVER_REF);
-  app.useGlobalFilters(new RedirectToClientFilter(httpRef));
+  const adapterHost = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new RedirectToClientFilter(adapterHost.httpAdapter.getInstance()));
   const port = process.env.PORT || 3000;
   Logger.log(`PORT=${port}`, 'Environment');
   await app.listen(port);

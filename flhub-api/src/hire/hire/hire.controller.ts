@@ -6,11 +6,7 @@ import { CandidateService, SearchQueryService } from '../services';
 
 @Controller('api/hire')
 export class HireController {
-  constructor(
-    private candidates: CandidateService,
-    private queries: SearchQueryService,
-    private exportService: ExportService,
-  ) {}
+  constructor(private candidates: CandidateService, private queries: SearchQueryService, private exportService: ExportService) {}
 
   @Post('query')
   async createQuery(@Body() query: SearchCandidatesOptions) {
@@ -18,10 +14,7 @@ export class HireController {
   }
 
   @Get('candidates')
-  async getCandidates(
-    @Query('query') query: string,
-    @Query('format') format = 'json',
-  ) {
+  async getCandidates(@Query('query') query: string = null, @Query('format') format = 'json') {
     const result = await this.candidates.get(query);
     if (format === 'csv') {
       return this.exportService.toCsv(result);
@@ -30,7 +23,7 @@ export class HireController {
   }
 
   @Post('candidates/update')
-  async updateCandidates(@Body('query') query: string) {
+  async updateCandidates(@Body('query') query: string = null) {
     await this.candidates.update(query);
   }
 

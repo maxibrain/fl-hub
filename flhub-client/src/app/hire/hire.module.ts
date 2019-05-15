@@ -2,7 +2,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MatListModule } from '@angular/material/list';
-import { MatCardModule, MatChipsModule, MatSliderModule, MatIconModule, MatFormFieldModule, MatInputModule } from '@angular/material';
+import {
+  MatCardModule,
+  MatChipsModule,
+  MatSliderModule,
+  MatIconModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatButtonModule,
+} from '@angular/material';
 import { NgxsModule } from '@ngxs/store';
 
 import { HireRoutingModule } from './hire-routing.module';
@@ -19,6 +27,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    MatButtonModule,
     MatCardModule,
     MatListModule,
     MatChipsModule,
@@ -28,6 +37,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatInputModule,
     NgxsModule.forFeature([HireState]),
     HireRoutingModule,
-  ]
+  ],
 })
-export class HireModule { }
+export class HireModule {}

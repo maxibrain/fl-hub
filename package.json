@@ -12,6 +12,14 @@
     "core-js": "^2.5.4",
     "tslib": "^1.9.0"
   },
+  "engines": {
+    "node": ">=9.0.0 <10.0.0"
+  },
+  "cacheDirectories": [
+    "node_modules",
+    "flhub-api/node_modules",
+    "flhub-client/node_modules"
+  ],
   "devDependencies": {
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",

@@ -1,15 +1,17 @@
 {
   "compilerOptions": {
-    "paths": { "*": ["types/*"] },
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
+    "noLib": false,
+    "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es6",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "typeRoots": ["./src/typings", "./node_modules/@types"]
   },
   "exclude": ["node_modules", "dist"]
 }

@@ -1,0 +1,28 @@
+.mat-card {
+  padding: 0;
+}
+.card-content {
+  padding: 16px;
+  border-radius: 4px;
+}
+.status-initial {
+  border-left: 5px solid #5599ff;
+}
+.status-watch {
+  border-left: 5px solid yellow;
+}
+.status-good {
+  border-left: 5px solid greenyellow;
+}
+.status-invited {
+  border-left: 5px solid green;
+}
+.status-hired {
+  border-left: 5px solid green;
+}
+.status-bad {
+  border-left: 5px solid red;
+}
+.status-refused {
+  border-left: 5px solid grey;
+}

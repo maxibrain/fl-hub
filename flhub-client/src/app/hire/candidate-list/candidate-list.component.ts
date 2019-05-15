@@ -3,7 +3,7 @@ import { Select, Store } from '@ngxs/store';
 import { HireState } from '../state/hire.state';
 import { Observable } from 'rxjs';
 import { CandidateDto } from '../interfaces/candidate.dto';
-import { GetCandidates } from '../state/hire.actions';
+import { GetCandidates, FetchCandidates } from '../state/hire.actions';
 
 @Component({
   selector: 'app-candidate-list',
@@ -12,13 +12,15 @@ import { GetCandidates } from '../state/hire.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CandidateListComponent implements OnInit {
-
   @Select(HireState.candidates) readonly candidates$: Observable<CandidateDto[]>;
 
-  constructor(private store: Store) { }
+  constructor(private store: Store) {}
 
   ngOnInit() {
     this.store.dispatch(new GetCandidates());
   }
 
+  update() {
+    this.store.dispatch(new FetchCandidates());
+  }
 }

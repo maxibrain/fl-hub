@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UpworkApi } from 'upwork-api/lib/api';
-import {
-  Search,
-  FreelancerSearchParams,
-  FreelancerSearchResult,
-} from 'upwork-api/lib/routers/freelancers/search';
+import { FreelancerSearchParams, FreelancerSearchResult, Search } from 'upwork-api/lib/routers/freelancers/search';
 
 export interface UpworkSession {
   requestToken: string;
@@ -28,18 +24,10 @@ export class UpworkApiService {
 
     this.api = new UpworkApi(config);
     const voidCallback = () => 0;
-    this.api.setAccessToken(
-      config.accessToken,
-      config.accessSecret,
-      voidCallback,
-    );
+    this.api.setAccessToken(config.accessToken, config.accessSecret, voidCallback);
   }
 
-  async authorize(
-    session: UpworkSession,
-    token: string,
-    verifier: string,
-  ): Promise<UpworkSession> {
+  async authorize(session: UpworkSession, token: string, verifier: string): Promise<UpworkSession> {
     if (!session || !session.requestToken || !session.requestTokenSecret) {
       throw new Error('No OAuth session.');
     }
@@ -49,20 +37,16 @@ export class UpworkApiService {
     if (session.requestToken !== token) {
       throw new Error('Token mismatch.');
     }
-    return await this.wrapFn(this.api, 'getAccessToken')(
-      session.requestToken,
-      session.requestTokenSecret,
-      verifier,
-    ).then(([accessToken, accessSecret]) => ({
-      ...session,
-      accessToken,
-      accessSecret,
-    }));
+    return await this.wrapFn(this.api, 'getAccessToken')(session.requestToken, session.requestTokenSecret, verifier).then(
+      ([accessToken, accessSecret]) => ({
+        ...session,
+        accessToken,
+        accessSecret,
+      }),
+    );
   }
 
-  async searchFreelancers(
-    params: FreelancerSearchParams,
-  ): Promise<FreelancerSearchResult> {
+  async searchFreelancers(params: FreelancerSearchParams): Promise<FreelancerSearchResult> {
     const search = new Search(this.api);
     return await new Promise((resolve, reject) => {
       search.find(params, (err, res) => {
@@ -74,10 +58,7 @@ export class UpworkApiService {
     });
   }
 
-  private wrapFn<T, K extends keyof T>(
-    obj: T,
-    fnName: K,
-  ): (...args: any[]) => Promise<any> {
+  private wrapFn<T, K extends keyof T>(obj: T, fnName: K): (...args: any[]) => Promise<any> {
     const fn = obj[fnName];
     if (typeof fn === 'function') {
       return (...args: any[]) => {
