@@ -1,6 +1,6 @@
-import { CandidateTrackerDto } from './candidateTracker.dto';
+import { CandidateTracker } from './candidateTracker';
 
 export interface CandidateDto {
   profile: any;
-  tracker: CandidateTrackerDto;
+  tracker: CandidateTracker;
 }

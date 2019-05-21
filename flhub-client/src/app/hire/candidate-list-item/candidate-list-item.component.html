@@ -2,7 +2,9 @@
   <div [class]="'card-content status-' + tracker.status.toLowerCase()">
     <mat-card-header>
       <img *ngIf="profile.portrait_50" mat-card-avatar [src]="profile.portrait_50" />
-      <mat-card-title>{{ profile.name }}</mat-card-title>
+      <mat-card-title
+        ><a [routerLink]="profile.id">{{ profile.name }}</a></mat-card-title
+      >
       <mat-card-subtitle>{{ profile.title }}</mat-card-subtitle>
       <div class="card-title-right">
         <div>{{ profile.rate | currency }}</div>

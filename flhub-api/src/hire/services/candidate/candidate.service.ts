@@ -68,7 +68,7 @@ export class CandidateService {
     return result;
   }
 
-  async get(searchName?: string): Promise<CandidateDto[]> {
+  async list(searchName?: string): Promise<CandidateDto[]> {
     const searchQuery = await this.searchQueries.findOneOrFail({ where: { name: searchName }, select: ['id'] });
     const trackers = await this.loadTrackers(searchQuery.id.toHexString());
     const profiles = await this.loadProfiles(trackers.map(t => t.profileId));
@@ -76,6 +76,16 @@ export class CandidateService {
       profile,
       tracker: trackers.find(t => t.profileId === profile.id),
     }));
+  }
+
+  async get(profileId: string, searchName?: string): Promise<CandidateDto> {
+    const searchQuery = await this.searchQueries.findOneOrFail({ where: { name: searchName }, select: ['id'] });
+    const profile = await this.loadProfile(profileId);
+    const tracker = await this.loadTracker(searchQuery.id.toHexString(), profileId);
+    return {
+      profile,
+      tracker,
+    };
   }
 
   async update(searchName?: string) {

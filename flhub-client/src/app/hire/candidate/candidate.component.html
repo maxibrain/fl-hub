@@ -1,0 +1,35 @@
+<div *ngIf="candidate$ | async; let candidate">
+  <div [class]="'status status-' + candidate.tracker.status.toLowerCase()">
+    {{ candidate.tracker.status }}
+  </div>
+  <mat-card>
+    <mat-card-header>
+      <img *ngIf="candidate.profile.portrait_50" mat-card-avatar [src]="candidate.profile.portrait_50" />
+      <mat-card-title>{{ candidate.profile.name }}</mat-card-title>
+      <mat-card-subtitle>{{ candidate.profile.title }}</mat-card-subtitle>
+      <div class="card-title-right">
+        <div>{{ candidate.profile.rate | currency }}</div>
+        <div *ngIf="candidate.profile.feedback">{{ candidate.profile.feedback }}</div>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <p>{{ candidate.profile.description }}</p>
+      <mat-chip-list>
+        <mat-chip *ngFor="let skill of candidate.profile.skills">{{ skill }}</mat-chip>
+      </mat-chip-list>
+      <div class="update-date">{{ candidate.profile.updated | date: 'long' }}</div>
+    </mat-card-content>
+    <mat-card-footer [ngSwitch]="candidate.tracker.status">
+      <div *ngSwitchCase="'INITIAL'">
+        <button type="button" mat-raised-button color="green" (click)="good(candidate)">Good</button>
+        <button type="button" mat-raised-button color="default" (click)="watch(candidate)">Watch</button>
+        <button type="button" mat-raised-button color="warn" (click)="bad(candidate)">Bad</button>
+      </div>
+      <div *ngSwitchCase="'GOOD'">
+        <button type="button" mat-raised-button color="green">Good</button>
+        <button type="button" mat-raised-button color="default">Watch</button>
+        <button type="button" mat-raised-button color="warn">Bad</button>
+      </div>
+    </mat-card-footer>
+  </mat-card>
+</div>

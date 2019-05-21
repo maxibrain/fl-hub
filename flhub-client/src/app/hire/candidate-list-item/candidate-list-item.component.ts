@@ -1,21 +1,13 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, HostBinding } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CandidateDto } from '../interfaces/candidate.dto';
 
 @Component({
   selector: 'app-candidate-list-item',
   templateUrl: './candidate-list-item.component.html',
-  styleUrls: ['./candidate-list-item.component.css'],
+  styleUrls: ['./candidate-list-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CandidateListItemComponent implements OnInit {
-  @HostBinding('class') get itemClass() {
-    let trackerStatus = '';
-    if (this.tracker && this.tracker.status) {
-      trackerStatus = 'candidate-tracker-status-' + this.tracker.status.toLowerCase();
-    }
-    return 'candidate-list-item ' + trackerStatus;
-  }
-
+export class CandidateListItemComponent {
   @Input() candidate: CandidateDto;
 
   get profile() {
@@ -25,8 +17,4 @@ export class CandidateListItemComponent implements OnInit {
   get tracker() {
     return this.candidate.tracker;
   }
-
-  constructor() {}
-
-  ngOnInit() {}
 }

@@ -7,11 +7,10 @@ import { CreateSearchQuery } from '../state/hire.actions';
 @Component({
   selector: 'app-create-query',
   templateUrl: './create-query.component.html',
-  styleUrls: ['./create-query.component.css'],
+  styleUrls: ['./create-query.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateQueryComponent {
-
   readonly form: FormGroup;
   readonly skills: FormControl;
 
@@ -20,7 +19,7 @@ export class CreateQueryComponent {
     this.form = fb.group({
       query: ['', [Validators.required]],
       skills: this.skills,
-      maxRate: [999]
+      maxRate: [999],
     });
   }
 
@@ -51,5 +50,4 @@ export class CreateQueryComponent {
   submit() {
     this.store.dispatch(new CreateSearchQuery(this.form.value)).subscribe();
   }
-
 }

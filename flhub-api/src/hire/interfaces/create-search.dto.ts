@@ -1,8 +1,6 @@
 import { SearchCandidatesOptions } from './search-candidates-options';
-import { CandidateDto } from './candidate.dto';
 
-export interface SearchQuery {
+export interface CreateSearchDto {
   name: string;
   params: SearchCandidatesOptions;
-  candidates: CandidateDto[];
 }

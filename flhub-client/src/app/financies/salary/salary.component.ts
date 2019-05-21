@@ -7,10 +7,9 @@ import { map, startWith } from 'rxjs/operators';
 @Component({
   selector: 'app-salary',
   templateUrl: './salary.component.html',
-  styleUrls: ['./salary.component.css']
+  styleUrls: ['./salary.component.scss'],
 })
 export class SalaryComponent {
-
   readonly workersFormArray: FormArray;
   readonly salaryForm: FormGroup;
   readonly calc$: Observable<SalaryCalculation>;
@@ -27,11 +26,11 @@ export class SalaryComponent {
       taxRate: [0.05, requiredPositiveNumber],
       salaryExchangeRate: [27.0, requiredPositiveNumber],
       workers: this.workersFormArray,
-      dividentsFee: [0.0035, requiredPositiveNumber]
+      dividentsFee: [0.0035, requiredPositiveNumber],
     });
     this.calc$ = this.salaryForm.valueChanges.pipe(
       startWith(this.salaryForm.value),
-      map(f => new SalaryCalculation(f))
+      map(f => new SalaryCalculation(f)),
     );
   }
 
@@ -44,12 +43,14 @@ export class SalaryComponent {
   }
 
   addWorker() {
-    this.workersFormArray.push(this.fb.group({
-      name: ['', [Validators.required]],
-      rate: [10, [Validators.required, Validators.min(1)]],
-      hours: [1, [Validators.required, Validators.min(0)]],
-      fee: [0.0035, [Validators.required, Validators.min(0)]],
-    }));
+    this.workersFormArray.push(
+      this.fb.group({
+        name: ['', [Validators.required]],
+        rate: [10, [Validators.required, Validators.min(1)]],
+        hours: [1, [Validators.required, Validators.min(0)]],
+        fee: [0.0035, [Validators.required, Validators.min(0)]],
+      }),
+    );
   }
 
   removeWorker(worker: FormGroup) {

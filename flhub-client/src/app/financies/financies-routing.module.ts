@@ -7,10 +7,15 @@ const routes: Routes = [
     path: 'salary',
     component: SalaryComponent,
   },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'salary',
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class FinanciesRoutingModule { }
+export class FinanciesRoutingModule {}

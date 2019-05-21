@@ -9,8 +9,6 @@ export enum CandidateStatus {
 }
 
 export interface CandidateTracker {
-  searchQueryId: string;
-  profileId: string;
   status: CandidateStatus | string;
   reviewDate: Date;
   reviewComment?: string;

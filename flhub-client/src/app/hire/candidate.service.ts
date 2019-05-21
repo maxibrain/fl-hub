@@ -1,24 +1,37 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CandidateDto } from './interfaces/candidate.dto';
-import { SearchCandidatesOptions } from './interfaces/search-candidates-options';
+import { SearchQuery } from './interfaces/search-query';
+import { CreateSearchDto } from './interfaces/create-search.dto';
+import { UpdateCandidateStatusDto } from './interfaces/update-candidate-status.dto';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CandidateService {
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  createQuery(options: SearchCandidatesOptions) {
-    return this.http.post('api/hire/query', options);
+  createQuery(data: CreateSearchDto) {
+    return this.http.post<SearchQuery>('api/hire/query', data);
   }
 
-  getAll() {
-    return this.http.get<CandidateDto[]>('api/hire/candidates');
+  listQueries() {
+    return this.http.get<SearchQuery[]>('api/hire/query');
   }
 
-  fetchAll() {
-    return this.http.post('api/hire/candidates/update', {});
+  list(query: string) {
+    return this.http.get<CandidateDto[]>('api/hire/search/' + query + '/candidates');
+  }
+
+  get(query: string, id: string) {
+    return this.http.get<CandidateDto>('api/hire/search/' + query + '/candidates/' + id);
+  }
+
+  fetchAll(query: string) {
+    return this.http.post('api/hire/candidates/update', { query });
+  }
+
+  updateStatus(status: UpdateCandidateStatusDto) {
+    return this.http.post('api/hire/candidate/status', status);
   }
 }
