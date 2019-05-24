@@ -1,6 +1,4 @@
 import { Injectable, Logger, HttpService } from '@nestjs/common';
-import * as zlib from 'zlib';
-import { Profile } from 'upwork-api/lib/routers/freelancers/profile';
 import { getObjectPatch, applyObjectPatch, isEmpty, applyObjectPatches, UpworkApiService } from '../../../shared';
 import { Candidate, SearchCandidatesOptions, fromProfile } from '../../interfaces';
 import { FreelancerProfilePatch } from '../../entities';
@@ -128,12 +126,7 @@ export class ProfileService {
       })
       .toPromise()
       .then(res => {
-        const encoding = res.headers['content-encoding'];
-        if (encoding === 'br') {
-          return zlib.brotliDecompressSync(Buffer.from(res.data, 'utf8'));
-        } else {
-          return Buffer.from(res.data, 'utf8');
-        }
+        return Buffer.from(res.data, 'utf8');
       })
       .then(buf => {
         const matches = buf.toString('utf8').match(/var phpVars = .*;\n/gi);
