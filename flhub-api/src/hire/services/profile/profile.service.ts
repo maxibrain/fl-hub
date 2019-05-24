@@ -25,10 +25,15 @@ export class ProfileService {
     patches.forEach(p => {
       let i = result.findIndex(r => r.id === p.profileId);
       if (i < 0) {
-        i = result.push({} as Candidate) - 1;
+        i = result.push({ id: p.profileId } as Candidate) - 1;
       }
-      result[i] = { ...applyObjectPatch(result[i], p.patch), updated: p.id.getTimestamp() };
+      let updated = p.id.getTimestamp();
+      if (result[i].updated && result[i].updated > updated) {
+        updated = result[i].updated;
+      }
+      result[i] = { ...applyObjectPatch(result[i], p.patch), updated };
     });
+    result.filter(c => !c.id).forEach(c => Logger.log(c));
     return result;
   }
 

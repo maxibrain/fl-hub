@@ -8,7 +8,7 @@
       <mat-card-subtitle>{{ profile.title }}</mat-card-subtitle>
       <div class="card-title-right">
         <div>{{ profile.rate | currency }}</div>
-        <div *ngIf="profile.feedback">{{ profile.feedback }}</div>
+        <div *ngIf="profile.feedback">{{ profile.feedback | number: '1.1-1' }}</div>
         <ng-container [ngSwitch]="profile.availability">
           <div *ngSwitchCase="'fullTime'">FT</div>
           <div *ngSwitchCase="'partTime'">PT</div>
