@@ -5,10 +5,11 @@ import { CandidateDto } from '../interfaces/candidate.dto';
 import { Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { HireState } from '../state/hire.state';
-import { GetCandidate, UpdateCandidateStatus } from '../state/hire.actions';
+import { GetCandidate, UpdateCandidateStatus, UpdateCandidateProfile } from '../state/hire.actions';
 import { CandidateStatus } from '../interfaces/candidateTracker';
 import { MatDialog } from '@angular/material';
 import { CandidateStatusCommentDialogComponent } from './candidate-status-comment-dialog.component';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-candidate',
@@ -26,13 +27,22 @@ export class CandidateComponent implements OnInit {
     return this.route.snapshot.params.id;
   }
 
-  constructor(private dialog: MatDialog, private route: ActivatedRoute, private store: Store) {
+  constructor(private dialog: MatDialog, private route: ActivatedRoute, private store: Store, private sanitizer: DomSanitizer) {
     this.candidate$ = route.params.pipe(mergeMap(params => store.select(HireState.candidate(params.name, params.id))));
   }
 
   ngOnInit() {
     const { name, id } = this.route.snapshot.params;
     this.store.dispatch(new GetCandidate(name, id));
+  }
+
+  getLink(candidate: CandidateDto) {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(candidate.profile.link);
+  }
+
+  update() {
+    const { id } = this.route.snapshot.params;
+    this.store.dispatch(new UpdateCandidateProfile(id));
   }
 
   good(candidate: CandidateDto) {

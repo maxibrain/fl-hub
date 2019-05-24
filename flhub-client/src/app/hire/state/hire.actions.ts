@@ -19,6 +19,12 @@ export class UpdateCandidateStatus {
   constructor(public readonly status: UpdateCandidateStatusDto) {}
 }
 
+export class UpdateCandidateProfile {
+  static readonly type = '[Hire] Update Candidate Profile';
+
+  constructor(public readonly id: string) {}
+}
+
 export class FetchCandidates {
   static readonly type = '[Hire] Fetch Candidates';
 

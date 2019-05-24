@@ -9,6 +9,7 @@ import { CandidateDto } from '../interfaces/candidate.dto';
 })
 export class CandidateListItemComponent {
   @Input() candidate: CandidateDto;
+  @Input() showStatus = true;
 
   get profile() {
     return this.candidate.profile;

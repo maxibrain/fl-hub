@@ -105,26 +105,39 @@ export class HireState {
   @Action(fromActions.UpdateCandidateStatus)
   updateCandidateStatus(ctx: StateContext<HireStateModel>, { status }: fromActions.UpdateCandidateStatus) {
     return this.service.updateStatus(status).pipe(
-      tap(() => {
-        ctx.setState(
+      tap(() =>
+        this.updateCandidate(ctx, status.id, status.searchName, {
+          tracker: <CandidateTracker>{
+            status: status.status,
+            reviewDate: new Date(),
+            reviewComment: status.comment,
+          },
+        }),
+      ),
+    );
+  }
+
+  private updateCandidate(ctx: StateContext<HireStateModel>, profileId: string, searchName: string, candidatePatch: Partial<CandidateDto>) {
+    ctx.setState(
+      patch({
+        queries: updateItem<SearchQuery>(
+          q => q.name === searchName,
           patch({
-            queries: updateItem<SearchQuery>(
-              q => q.name === status.searchName,
-              patch({
-                candidates: updateItem<CandidateDto>(
-                  c => c.profile.id === status.id,
-                  patch({
-                    tracker: <CandidateTracker>{
-                      status: status.status,
-                      reviewDate: new Date(),
-                      reviewComment: status.comment,
-                    },
-                  }),
-                ),
-              }),
-            ),
+            candidates: updateItem<CandidateDto>(c => c.profile.id === profileId, patch(candidatePatch)),
           }),
-        );
+        ),
+      }),
+    );
+  }
+
+  @Action(fromActions.UpdateCandidateProfile)
+  updateCandidateProfile(ctx: StateContext<HireStateModel>, { id }: fromActions.UpdateCandidateProfile) {
+    return this.service.updateProfile(id).pipe(
+      tap(profile => {
+        const { queries } = ctx.getState();
+        queries
+          .filter(q => q.candidates && q.candidates.findIndex(c => c.profile.id === id) > -1)
+          .forEach(q => this.updateCandidate(ctx, id, q.name, { profile }));
       }),
     );
   }

@@ -1,8 +1,8 @@
-import { Injectable, Logger, BadRequestException } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException, HttpService } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import { FreelancerProfile, FreelancerSearchParams } from 'upwork-api/lib/routers/freelancers/search';
-import { UpworkApiService, applyObjectPatches, applyObjectPatch, getObjectPatch, createObjectFromPatches } from '../../../shared';
+import { UpworkApiService, applyObjectPatches, applyObjectPatch, getObjectPatch, createObjectFromPatches, isEmpty } from '../../../shared';
 import {
   CandidateStatusPatch,
   FreelancerProfilePatch,
@@ -18,33 +18,16 @@ import {
   UpdateCandidateStatusDto,
   SearchCandidatesOptions,
 } from '../../interfaces';
+import { ProfileService } from '../profile/profile.service';
 
 @Injectable()
 export class CandidateService {
   constructor(
     private api: UpworkApiService,
+    private profiles: ProfileService,
     @InjectRepository(SearchQuery) private searchQueries: MongoRepository<SearchQuery>,
     @InjectRepository(CandidateStatusPatch) private trackerPatches: MongoRepository<CandidateStatusPatch>,
-    @InjectRepository(FreelancerProfilePatch) private profilePatches: MongoRepository<FreelancerProfilePatch>,
   ) {}
-
-  private async loadProfile(id: string): Promise<Candidate> {
-    const patches = await this.profilePatches.find({ where: { profileId: id } });
-    return applyObjectPatches({} as Candidate, patches.map(p => p.patch));
-  }
-
-  private async loadProfiles(ids: string[]): Promise<Candidate[]> {
-    const patches = await this.profilePatches.find({ where: { profileId: { $in: ids } } });
-    const result: Candidate[] = [];
-    patches.forEach(p => {
-      let i = result.findIndex(r => r.id === p.profileId);
-      if (i < 0) {
-        i = result.push({} as Candidate) - 1;
-      }
-      result[i] = { ...applyObjectPatch(result[i], p.patch), updated: p.id.getTimestamp() };
-    });
-    return result;
-  }
 
   private async loadTrackers(searchQueryId: string | string[]): Promise<CandidateTracker[]> {
     const where = Array.isArray(searchQueryId) ? { $in: searchQueryId } : { searchQueryId };
@@ -71,7 +54,7 @@ export class CandidateService {
   async list(searchName?: string): Promise<CandidateDto[]> {
     const searchQuery = await this.searchQueries.findOneOrFail({ where: { name: searchName }, select: ['id'] });
     const trackers = await this.loadTrackers(searchQuery.id.toHexString());
-    const profiles = await this.loadProfiles(trackers.map(t => t.profileId));
+    const profiles = await this.profiles.list(trackers.map(t => t.profileId));
     return profiles.map(profile => ({
       profile,
       tracker: trackers.find(t => t.profileId === profile.id),
@@ -80,7 +63,7 @@ export class CandidateService {
 
   async get(profileId: string, searchName?: string): Promise<CandidateDto> {
     const searchQuery = await this.searchQueries.findOneOrFail({ where: { name: searchName }, select: ['id'] });
-    const profile = await this.loadProfile(profileId);
+    const profile = await this.profiles.get(profileId);
     const tracker = await this.loadTracker(searchQuery.id.toHexString(), profileId);
     return {
       profile,
@@ -90,14 +73,9 @@ export class CandidateService {
 
   async update(searchName?: string) {
     const searchQuery = await this.searchQueries.findOneOrFail({ where: { name: searchName } });
-    const profiles = await this.fetchAll(searchQuery.params);
+    const profiles = await this.profiles.search(searchQuery.params);
     profiles.forEach(async profile => {
-      const stored = await this.loadProfile(profile.id);
-      const patch = getObjectPatch(profile, stored);
-      const patchEntity = new FreelancerProfilePatch();
-      patchEntity.patch = patch;
-      patchEntity.profileId = profile.id;
-      await this.profilePatches.insert(patchEntity);
+      await this.profiles.save(profile.id, profile);
       const tracker = await this.loadTracker(searchQuery.id.toHexString(), profile.id);
       if (!tracker) {
         const statusPatch = createInitialCandidateStatusPatch(searchQuery.id.toHexString(), profile.id);
@@ -108,61 +86,11 @@ export class CandidateService {
 
   async updateStatus(update: UpdateCandidateStatusDto) {
     const searchQuery = await this.searchQueries.findOneOrFail({ where: { name: update.searchName } });
-    const candidate = await this.loadProfile(update.id);
+    const candidate = await this.profiles.get(update.id);
     if (!candidate) {
       throw new BadRequestException();
     }
     const patch = createCandidateStatusPatch(searchQuery.id.toHexString(), update.id, update.status, update.comment);
     await this.trackerPatches.insert(patch);
-  }
-
-  private async fetchAll(options: SearchCandidatesOptions): Promise<Candidate[]> {
-    const pageSize = 100;
-    const initialOptions: FreelancerSearchParams = {
-      q: options.query,
-      skills: (options.skills || []).join(';'),
-      profile_type: options.profileType,
-      category2: options.category,
-      paging: `0;${pageSize}`,
-      rate: `[0 TO ${options.maxRate}]`,
-      loc: options.country,
-    };
-    const initialResult = await this.api.searchFreelancers(initialOptions);
-
-    const count = initialResult.paging.total;
-    const profileFilter = (p: Candidate) => p.country === options.country;
-    const filterProfiles = (profiles: FreelancerProfile[]) => profiles.filter(profileFilter).map(p => fromProfile(p));
-    const initialProviders = filterProfiles(initialResult.providers);
-
-    const searchFn = this.api.searchFreelancers.bind(this.api);
-    const promises = new Array(Math.ceil((count - initialResult.providers.length) / pageSize)).fill(0).map((_, i) => {
-      Logger.log(`Page ${i + 1} running...`);
-      const offset = (i + 1) * pageSize;
-      const pageOptions = {
-        ...initialOptions,
-        paging: `${offset};${pageSize}`,
-      };
-      return new Promise<Candidate[]>(resolve => {
-        setTimeout(
-          () =>
-            searchFn(pageOptions)
-              .then(result => {
-                Logger.log(`Page ${i + 1} OK`);
-                resolve(filterProfiles(result.providers));
-              })
-              .catch(err => {
-                Logger.error(`Page ${i + 1} ERROR: ${err}`);
-                resolve([]);
-              }),
-          Math.floor(i / 10) * 2000,
-        );
-      });
-    });
-
-    return await Promise.all(promises).then(arrayOfResults =>
-      arrayOfResults
-        .reduce((acc, providers) => [...acc, ...providers.filter(p => acc.map(a => a.id).indexOf(p.id) < 0)], initialProviders)
-        .sort((a, b) => a.id.localeCompare(b.id)),
-    );
   }
 }

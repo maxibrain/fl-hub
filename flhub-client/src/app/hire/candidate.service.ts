@@ -34,4 +34,8 @@ export class CandidateService {
   updateStatus(status: UpdateCandidateStatusDto) {
     return this.http.post('api/hire/candidate/status', status);
   }
+
+  updateProfile(id: string) {
+    return this.http.post<any>('api/hire/candidate/' + id + '/update', null);
+  }
 }

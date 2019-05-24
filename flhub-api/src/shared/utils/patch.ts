@@ -25,3 +25,7 @@ export function applyObjectPatches<T>(object: T, patches: Array<Partial<T>>): T 
 export function createObjectFromPatches<T>(patches: Array<Partial<T>>): T {
   return applyObjectPatches(null, patches);
 }
+
+export function isEmpty(object: any): boolean {
+  return _.isEmpty(object);
+}

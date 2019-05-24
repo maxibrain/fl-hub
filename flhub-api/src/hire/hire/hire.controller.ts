@@ -2,11 +2,16 @@ import { Controller, Get, Param, Logger, Query, Post, Body } from '@nestjs/commo
 import { ExportService } from '../../shared';
 import { UpdateCandidateStatusDto } from '../interfaces/update-candidate-status.dto';
 import { SearchCandidatesOptions, CreateSearchDto } from '../interfaces';
-import { CandidateService, SearchQueryService } from '../services';
+import { CandidateService, SearchQueryService, ProfileService } from '../services';
 
 @Controller('api/hire')
 export class HireController {
-  constructor(private candidates: CandidateService, private queries: SearchQueryService, private exportService: ExportService) {}
+  constructor(
+    private candidates: CandidateService,
+    private profiles: ProfileService,
+    private queries: SearchQueryService,
+    private exportService: ExportService,
+  ) {}
 
   @Post('query')
   async createQuery(@Body() query: CreateSearchDto) {
@@ -40,5 +45,10 @@ export class HireController {
   @Post('candidate/status')
   async updateCandidateStatus(@Body() dto: UpdateCandidateStatusDto) {
     await this.candidates.updateStatus(dto);
+  }
+
+  @Post('candidate/:id/update')
+  async updateCandidateProfile(@Param('id') id: string) {
+    return await this.profiles.fetch(id);
   }
 }

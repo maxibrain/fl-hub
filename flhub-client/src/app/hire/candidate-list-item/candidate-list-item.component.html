@@ -1,5 +1,5 @@
 <mat-card>
-  <div [class]="'card-content status-' + tracker.status.toLowerCase()">
+  <div [class]="showStatus && 'card-content status-' + tracker.status.toLowerCase()">
     <mat-card-header>
       <img *ngIf="profile.portrait_50" mat-card-avatar [src]="profile.portrait_50" />
       <mat-card-title
@@ -9,6 +9,12 @@
       <div class="card-title-right">
         <div>{{ profile.rate | currency }}</div>
         <div *ngIf="profile.feedback">{{ profile.feedback }}</div>
+        <ng-container [ngSwitch]="profile.availability">
+          <div *ngSwitchCase="'fullTime'">FT</div>
+          <div *ngSwitchCase="'partTime'">PT</div>
+          <div *ngSwitchCase="'notSure'">OO</div>
+          <div *ngSwitchDefault>N/A</div>
+        </ng-container>
       </div>
     </mat-card-header>
     <mat-card-content>

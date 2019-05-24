@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UpworkApi } from 'upwork-api/lib/api';
 import { FreelancerSearchParams, FreelancerSearchResult, Search } from 'upwork-api/lib/routers/freelancers/search';
+import { Profile } from 'upwork-api/lib/routers/freelancers/profile';
 
 export interface UpworkSession {
   requestToken: string;
@@ -46,10 +47,22 @@ export class UpworkApiService {
     );
   }
 
-  async searchFreelancers(params: FreelancerSearchParams): Promise<FreelancerSearchResult> {
+  searchFreelancers(params: FreelancerSearchParams): Promise<FreelancerSearchResult> {
     const search = new Search(this.api);
-    return await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       search.find(params, (err, res) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve(res);
+      });
+    });
+  }
+
+  getProfile(id: string, brief = false): Promise<any> {
+    const profile = new Profile(this.api);
+    return new Promise((resolve, reject) => {
+      profile.getSpecificBrief(id, (err, res) => {
         if (err) {
           return reject(err);
         }

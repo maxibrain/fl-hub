@@ -5,4 +5,5 @@ export interface SearchCandidatesOptions {
   country?: string;
   profileType?: 'Agency' | 'Independent';
   category?: 'Web & Mobile Development';
+  availableHours?: 'FT' | 'HT' | null;
 }

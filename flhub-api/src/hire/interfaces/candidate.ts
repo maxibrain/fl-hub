@@ -4,6 +4,7 @@ import { FreelancerProfile } from 'upwork-api/lib/routers/freelancers/search';
 export interface Candidate extends FreelancerProfile {
   link: string;
   username: string;
+  availability?: 'fullTime' | 'partTime' | 'notSure';
   updated?: Date;
 }
 
