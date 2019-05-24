@@ -1,5 +1,5 @@
 <mat-card>
-  <div [class]="showStatus && 'card-content status-' + tracker.status.toLowerCase()">
+  <div [class]="showStatus && tracker && 'card-content status-' + tracker.status.toLowerCase()">
     <mat-card-header>
       <img *ngIf="profile.portrait_50" mat-card-avatar [src]="profile.portrait_50" />
       <mat-card-title
