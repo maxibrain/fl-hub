@@ -3,7 +3,7 @@
   <div [class]="'status status-' + candidate.tracker.status.toLowerCase()">
     {{ candidate.tracker.status }}
   </div>
-  <app-candidate-list-item [candidate]="candidate" [showStatus]="false"></app-candidate-list-item>
+  <app-candidate-list-item [candidate]="candidate" [showStatus]="false" linkType="upwork"></app-candidate-list-item>
   <ng-container [ngSwitch]="candidate.tracker.status">
     <div *ngSwitchCase="'INITIAL'">
       <button type="button" mat-raised-button color="primary" (click)="good(candidate)">Good</button>

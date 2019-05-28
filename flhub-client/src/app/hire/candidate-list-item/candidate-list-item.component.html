@@ -2,9 +2,10 @@
   <div [class]="showStatus && tracker && 'card-content status-' + tracker.status.toLowerCase()">
     <mat-card-header>
       <img *ngIf="profile.portrait_50" mat-card-avatar [src]="profile.portrait_50" />
-      <mat-card-title
-        ><a [routerLink]="profile.id">{{ profile.name }}</a></mat-card-title
-      >
+      <mat-card-title>
+        <a *ngIf="linkType === 'app'" [routerLink]="profile.id">{{ profile.name }}</a>
+        <a *ngIf="linkType === 'upwork'" [href]="profile.link" target="_blank">{{ profile.name }}</a>
+      </mat-card-title>
       <mat-card-subtitle>{{ profile.title }}</mat-card-subtitle>
       <div class="card-title-right">
         <div>{{ profile.rate | currency }}</div>

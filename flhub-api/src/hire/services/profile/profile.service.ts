@@ -134,10 +134,18 @@ export class ProfileService {
         return Buffer.from(res.data, 'utf8');
       })
       .then(buf => {
-        const matches = buf.toString('utf8').match(/var phpVars = .*;\n/gi);
+        const html = buf.toString('utf8');
+        const matches = html.match(/var phpVars = .*;\n/gi);
         if (matches) {
           const json = matches[0].slice(matches[0].indexOf('{'), matches[0].lastIndexOf(';'));
-          return JSON.parse(json).profileSettings.profile;
+          const model = JSON.parse(json);
+          if (model && model.profileSettings && model.profileSettings.profile) {
+            return model.profileSettings.profile;
+          } else {
+            Logger.error(json, 'Upwork Crawler');
+          }
+        } else {
+          Logger.error(html, 'Upwork Crawler');
         }
         return {};
       });

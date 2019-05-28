@@ -4,21 +4,21 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: 'hire',
-    loadChildren: './hire/hire.module#HireModule'
+    loadChildren: './hire/hire.module#HireModule',
   },
   {
     path: 'financies',
-    loadChildren: './financies/financies.module#FinanciesModule'
+    loadChildren: './financies/financies.module#FinanciesModule',
   },
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'hire/candidates'
+    redirectTo: 'hire',
   },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
