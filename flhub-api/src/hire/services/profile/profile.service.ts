@@ -39,8 +39,10 @@ export class ProfileService {
   }
 
   async fetch(id: string) {
-    const apiProfile = await this.fetchApi(id);
-    const crawledProfile = await this.crawlPage(id);
+    const [apiProfile, crawledProfile] = await Promise.all([
+      this.fetchApi(id),
+      this.crawlPage(id).catch(err => ({ availability: { capacity: { nid: null } } })),
+    ]);
     const profile: Candidate = {
       ...apiProfile,
       availability: crawledProfile.availability.capacity.nid,
