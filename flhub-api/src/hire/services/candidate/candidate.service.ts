@@ -1,29 +1,14 @@
-import { Injectable, Logger, BadRequestException, HttpService } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
-import { FreelancerProfile, FreelancerSearchParams } from 'upwork-api/lib/routers/freelancers/search';
-import { UpworkApiService, applyObjectPatches, applyObjectPatch, getObjectPatch, createObjectFromPatches, isEmpty } from '../../../shared';
-import {
-  CandidateStatusPatch,
-  FreelancerProfilePatch,
-  SearchQuery,
-  createInitialCandidateStatusPatch,
-  createCandidateStatusPatch,
-} from '../../entities';
-import {
-  Candidate,
-  fromProfile,
-  CandidateDto,
-  CandidateTracker,
-  UpdateCandidateStatusDto,
-  SearchCandidatesOptions,
-} from '../../interfaces';
+import { UpworkApiService, applyObjectPatch, createObjectFromPatches } from '../../../shared';
+import { CandidateStatusPatch, SearchQuery, createInitialCandidateStatusPatch, createCandidateStatusPatch } from '../../entities';
+import { CandidateDto, CandidateTracker, UpdateCandidateStatusDto } from '../../interfaces';
 import { ProfileService } from '../profile/profile.service';
 
 @Injectable()
 export class CandidateService {
   constructor(
-    private api: UpworkApiService,
     private profiles: ProfileService,
     @InjectRepository(SearchQuery) private searchQueries: MongoRepository<SearchQuery>,
     @InjectRepository(CandidateStatusPatch) private trackerPatches: MongoRepository<CandidateStatusPatch>,

@@ -80,7 +80,7 @@ export class ProfileService {
     const initialResult = await this.api.searchFreelancers(initialOptions);
 
     const count = initialResult.paging.total;
-    const profileFilter = (p: Candidate) => p.country === options.country;
+    const profileFilter = (p: FreelancerProfile) => p.country === options.country;
     const filterProfiles = (profiles: FreelancerProfile[]) => profiles.filter(profileFilter).map(p => fromProfile(p));
     const initialProviders = filterProfiles(initialResult.providers);
 
@@ -116,10 +116,10 @@ export class ProfileService {
     );
   }
 
-  private async fetchApi(id: string): Promise<FreelancerProfile> {
+  private async fetchApi(id: string): Promise<Candidate> {
     const profile = await this.api.getProfile(id);
     Logger.debug(profile);
-    return profile;
+    return fromProfile(profile);
   }
 
   private async crawlPage(id: string) {

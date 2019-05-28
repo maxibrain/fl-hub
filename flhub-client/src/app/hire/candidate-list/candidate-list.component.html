@@ -1,7 +1,10 @@
-<button type="button" mat-raised-button color="primary" (click)="update()">Update candidates</button>
-<div *ngIf="(candidates$ | async).length; else noCandidates">
-  <app-candidate-list-item *ngFor="let candidate of candidates$ | async" [candidate]="candidate"></app-candidate-list-item>
-</div>
+<mat-spinner *ngIf="candidatesLoading$ | async; else candidates"></mat-spinner>
+<ng-template #candidates>
+  <button type="button" mat-raised-button color="primary" (click)="update()">Update candidates</button>
+  <div *ngIf="(candidates$ | async).length; else noCandidates">
+    <app-candidate-list-item *ngFor="let candidate of candidates$ | async" [candidate]="candidate"></app-candidate-list-item>
+  </div>
+</ng-template>
 <ng-template #noCandidates>
   <p>No candidates</p>
 </ng-template>

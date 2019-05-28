@@ -62,6 +62,7 @@ declare namespace Upwork {
           dev_recno: string;
           dev_short_name: string;
           dev_timezone: string;
+          dev_tot_feedback: string;
           dev_total_hours: string;
           dev_ui_profile_access: 'Public';
           ciphertext: string;

@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { HireState } from '../state/hire.state';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { CandidateDto } from '../interfaces/candidate.dto';
 import { ListCandidates, FetchCandidates } from '../state/hire.actions';
 import { ActivatedRoute, Params } from '@angular/router';
@@ -14,6 +14,8 @@ import { pluck, switchMap, mergeMap } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CandidateListComponent implements OnInit {
+  private readonly _candidatesLoading$ = new BehaviorSubject(false);
+  readonly candidatesLoading$ = this._candidatesLoading$.asObservable();
   readonly candidates$: Observable<CandidateDto[]>;
 
   constructor(private store: Store, private route: ActivatedRoute) {
@@ -24,10 +26,12 @@ export class CandidateListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.store.dispatch(new ListCandidates(this.route.snapshot.params['name']));
+    this._candidatesLoading$.next(true);
+    this.store.dispatch(new ListCandidates(this.route.snapshot.params['name'])).subscribe(() => this._candidatesLoading$.next(false));
   }
 
   update() {
-    this.store.dispatch(new FetchCandidates(this.route.snapshot.params['name']));
+    this._candidatesLoading$.next(true);
+    this.store.dispatch(new FetchCandidates(this.route.snapshot.params['name'])).subscribe(() => this._candidatesLoading$.next(false));
   }
 }

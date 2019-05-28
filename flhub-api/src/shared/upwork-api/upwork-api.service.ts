@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { UpworkApi } from 'upwork-api/lib/api';
 import { FreelancerSearchParams, FreelancerSearchResult, Search, FreelancerProfile } from 'upwork-api/lib/routers/freelancers/search';
 import { Profile, ProfileResponse } from 'upwork-api/lib/routers/freelancers/profile';
@@ -67,8 +67,11 @@ export class UpworkApiService {
         if (err) {
           return reject(err);
         }
+        Logger.debug(res, 'Upwork API');
         const { profile } = res;
-        const skills = Array.isArray(profile.skills.skill) ? profile.skills.skill.map(s => s.skl_name) : [profile.skills.skill.skl_name];
+        const skills = (Array.isArray(profile.skills.skill) ? profile.skills.skill : [profile.skills.skill])
+          .sort((a, b) => (parseInt(a.skl_rank, 10) > parseInt(b.skl_rank, 10) ? 1 : -1))
+          .map(s => s.skl_name);
         return resolve({
           id: profile.ciphertext,
           name: profile.dev_first_name + ' ' + profile.dev_last_name,
@@ -78,6 +81,7 @@ export class UpworkApiService {
           description: profile.dev_blurb,
           portrait_100: profile.dev_portrait_100,
           profile_type: profile.dev_ac_agencies ? 'Agency' : 'Independent',
+          feedback: profile.dev_tot_feedback,
           rate: profile.dev_bill_rate,
           skills,
           education: profile.education
