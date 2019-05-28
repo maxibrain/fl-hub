@@ -23,16 +23,11 @@
       </mat-list-item>
     </mat-list>
   </div>
-  <ng-container [ngSwitch]="candidate.tracker.status">
-    <div *ngSwitchCase="'INITIAL'">
-      <button type="button" mat-raised-button color="primary" (click)="good(candidate)">Good</button>
-      <button type="button" mat-raised-button color="default" (click)="watch(candidate)">Watch</button>
-      <button type="button" mat-raised-button color="warn" (click)="bad(candidate)">Bad</button>
-    </div>
-    <div *ngSwitchCase="'GOOD'">
-      <button type="button" mat-raised-button color="primary">Good</button>
-      <button type="button" mat-raised-button color="default">Watch</button>
-      <button type="button" mat-raised-button color="warn">Bad</button>
-    </div>
-  </ng-container>
+  <div>
+    <button *ngIf="candidate.tracker.status !== 'GOOD'" type="button" mat-raised-button color="primary" (click)="good(candidate)">
+      Good
+    </button>
+    <button type="button" mat-raised-button color="default" (click)="watch(candidate)">Watch</button>
+    <button *ngIf="candidate.tracker.status !== 'BAD'" type="button" mat-raised-button color="warn" (click)="bad(candidate)">Bad</button>
+  </div>
 </div>
