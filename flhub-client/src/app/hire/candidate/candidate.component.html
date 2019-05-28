@@ -4,6 +4,25 @@
     {{ candidate.tracker.status }}
   </div>
   <app-candidate-list-item [candidate]="candidate" [showStatus]="false" linkType="upwork"></app-candidate-list-item>
+  <div *ngIf="candidate.profile?.experience?.length">
+    <h3>Employment history</h3>
+    <mat-list>
+      <mat-list-item *ngFor="let e of candidate.profile.experience">
+        <h4 matLine>{{ e.exp_title_raw }} | {{ e.exp_company }}</h4>
+        <p matLine>{{ e.exp_from }} - {{ e.exp_to }}</p>
+        <p *ngIf="e.exp_comment" matLine>{{ e.exp_comment }}</p>
+      </mat-list-item>
+    </mat-list>
+  </div>
+  <div *ngIf="candidate.profile?.education?.length">
+    <h3>Education</h3>
+    <mat-list>
+      <mat-list-item *ngFor="let e of candidate.profile.education">
+        <h4 matLine>{{ e.ed_degree }}, {{ e.ed_area }} | {{ e.ed_school }}</h4>
+        <p matLine>{{ e.ed_from }} - {{ e.ed_to }}</p>
+      </mat-list-item>
+    </mat-list>
+  </div>
   <ng-container [ngSwitch]="candidate.tracker.status">
     <div *ngSwitchCase="'INITIAL'">
       <button type="button" mat-raised-button color="primary" (click)="good(candidate)">Good</button>

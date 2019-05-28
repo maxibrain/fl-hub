@@ -5,6 +5,7 @@ import { FreelancerProfilePatch } from '../../entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import { FreelancerSearchParams, FreelancerProfile } from 'upwork-api/lib/routers/freelancers/search';
+import { ProfileResponse } from 'upwork-api/lib/routers/freelancers/profile';
 
 @Injectable()
 export class ProfileService {
@@ -38,11 +39,15 @@ export class ProfileService {
   }
 
   async fetch(id: string) {
+    const apiProfile = await this.fetchApi(id);
     const crawledProfile = await this.crawlPage(id);
     const profile: Candidate = {
-      id,
+      ...apiProfile,
       availability: crawledProfile.availability.capacity.nid,
     } as any;
+    // name is always short here
+    delete profile.name;
+    Logger.debug(profile);
     return await this.save(id, profile);
   }
 
@@ -109,9 +114,9 @@ export class ProfileService {
     );
   }
 
-  private async fetchApi(id: string): Promise<Candidate> {
+  private async fetchApi(id: string): Promise<FreelancerProfile> {
     const profile = await this.api.getProfile(id);
-    Logger.log(profile);
+    Logger.debug(profile);
     return profile;
   }
 
@@ -139,15 +144,16 @@ export class ProfileService {
         if (matches) {
           const json = matches[0].slice(matches[0].indexOf('{'), matches[0].lastIndexOf(';'));
           const model = JSON.parse(json);
+          Logger.debug(model);
           if (model && model.profileSettings && model.profileSettings.profile) {
             return model.profileSettings.profile;
           } else {
-            Logger.error(json, 'Upwork Crawler');
+            Logger.warn(json, 'Upwork Crawler');
           }
         } else {
-          Logger.error(html, 'Upwork Crawler');
+          Logger.warn(html, 'Upwork Crawler');
         }
-        return {};
+        throw new Error('Cannot parse crawled page');
       });
   }
 }

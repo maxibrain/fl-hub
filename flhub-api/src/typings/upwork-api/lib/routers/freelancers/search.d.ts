@@ -19,15 +19,19 @@ declare namespace Upwork {
     export interface FreelancerProfile {
       id: string;
       skills: string[];
-      categories2: string[];
-      feedback: string;
+      categories2?: string[];
+      feedback?: string;
       rate: string;
       title: string;
+      city: string;
       country: string;
       description: string;
       name: string;
       profile_type: ProfileType;
-      portrait_50: string;
+      portrait_50?: string;
+      portrait_100?: string;
+      education?: Upwork.Freelancers.Profile.Education[];
+      experience?: Upwork.Freelancers.Profile.Experience[];
     }
 
     interface Paging {

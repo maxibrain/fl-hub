@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UpworkApi } from 'upwork-api/lib/api';
-import { FreelancerSearchParams, FreelancerSearchResult, Search } from 'upwork-api/lib/routers/freelancers/search';
-import { Profile } from 'upwork-api/lib/routers/freelancers/profile';
+import { FreelancerSearchParams, FreelancerSearchResult, Search, FreelancerProfile } from 'upwork-api/lib/routers/freelancers/search';
+import { Profile, ProfileResponse } from 'upwork-api/lib/routers/freelancers/profile';
 
 export interface UpworkSession {
   requestToken: string;
@@ -59,14 +59,38 @@ export class UpworkApiService {
     });
   }
 
-  getProfile(id: string, brief = false): Promise<any> {
-    const profile = new Profile(this.api);
+  getProfile(id: string, brief = false): Promise<FreelancerProfile> {
+    const profileApi = new Profile(this.api);
     return new Promise((resolve, reject) => {
-      profile.getSpecificBrief(id, (err, res) => {
+      const fn = brief ? profileApi.getSpecificBrief : profileApi.getSpecific;
+      fn.bind(profileApi)(id, (err, res: ProfileResponse) => {
         if (err) {
           return reject(err);
         }
-        return resolve(res);
+        const { profile } = res;
+        const skills = Array.isArray(profile.skills.skill) ? profile.skills.skill.map(s => s.skl_name) : [profile.skills.skill.skl_name];
+        return resolve({
+          id: profile.ciphertext,
+          name: profile.dev_first_name + ' ' + profile.dev_last_name,
+          title: profile.dev_profile_title,
+          country: profile.dev_country,
+          city: profile.dev_city,
+          description: profile.dev_blurb,
+          portrait_100: profile.dev_portrait_100,
+          profile_type: profile.dev_ac_agencies ? 'Agency' : 'Independent',
+          rate: profile.dev_bill_rate,
+          skills,
+          education: profile.education
+            ? Array.isArray(profile.education.institution)
+              ? profile.education.institution
+              : [profile.education.institution]
+            : [],
+          experience: profile.experiences
+            ? Array.isArray(profile.experiences.experience)
+              ? profile.experiences.experience
+              : [profile.experiences.experience]
+            : [],
+        });
       });
     });
   }
