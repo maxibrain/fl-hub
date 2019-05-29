@@ -14,6 +14,7 @@ import {
   MatProgressSpinnerModule,
   MatPaginatorModule,
   MatCheckboxModule,
+  MatMenuModule,
 } from '@angular/material';
 import { NgxsModule, Store } from '@ngxs/store';
 
@@ -52,6 +53,7 @@ import { CandidateStatusCommentDialogComponent } from './candidate/candidate-sta
     MatIconModule,
     MatInputModule,
     MatListModule,
+    MatMenuModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatSliderModule,

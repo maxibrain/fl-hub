@@ -6,6 +6,22 @@
       <form [formGroup]="filterForm">
         <mat-checkbox formControlName="showBad" (change)="onFilterChange()">Show bad candidates</mat-checkbox>
       </form>
+      <ng-container *ngIf=""></ng-container>
+      <button mat-button [matMenuTriggerFor]="menu">Sort By</button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item *ngFor="let sortingKey of sortingKeys" (click)="sortBy(sortingKey)">
+          <ng-container *ngIf="sortBy$ | async; let sortBy">
+            <ng-container *ngIf="sortBy.key === sortingKey">
+              <mat-icon *ngIf="sortBy.direction === 'desc'; else asc">arrow_downward</mat-icon>
+              <ng-template #asc>
+                <mat-icon>arrow_upward</mat-icon>
+              </ng-template>
+            </ng-container>
+          </ng-container>
+          <span>{{ sortingKey }}</span>
+        </button>
+        <button mat-menu-item (click)="sortBy(null)">Reset</button>
+      </mat-menu>
     </div>
   </div>
   <div *ngIf="candidates$ | async; let candidates; else: noCandidates">
