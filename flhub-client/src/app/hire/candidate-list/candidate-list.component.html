@@ -1,8 +1,17 @@
 <mat-spinner *ngIf="candidatesLoading$ | async; else candidates"></mat-spinner>
 <ng-template #candidates>
   <button type="button" mat-raised-button color="primary" (click)="update()">Update candidates</button>
-  <div *ngIf="(candidates$ | async).length; else noCandidates">
-    <app-candidate-list-item *ngFor="let candidate of candidates$ | async" [candidate]="candidate"></app-candidate-list-item>
+  <div *ngIf="candidates$ | async; let candidates; else: noCandidates">
+    <ng-container *ngIf="candidates.length; else noCandidates">
+      <app-candidate-list-item *ngFor="let candidate of page$ | async" [candidate]="candidate"></app-candidate-list-item>
+      <mat-paginator
+        [length]="candidates.length"
+        [pageSize]="pageSize$ | async"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        [pageIndex]="pageIndex$ | async"
+        (page)="onPageChanged($event)"
+      ></mat-paginator>
+    </ng-container>
   </div>
 </ng-template>
 <ng-template #noCandidates>

@@ -12,6 +12,7 @@ import {
   MatButtonModule,
   MatDialogModule,
   MatProgressSpinnerModule,
+  MatPaginatorModule,
 } from '@angular/material';
 import { NgxsModule, Store } from '@ngxs/store';
 
@@ -49,6 +50,7 @@ import { CandidateStatusCommentDialogComponent } from './candidate/candidate-sta
     MatIconModule,
     MatInputModule,
     MatListModule,
+    MatPaginatorModule,
     MatProgressSpinnerModule,
     MatSliderModule,
     NgxsModule.forFeature([HireState]),
