@@ -13,6 +13,7 @@ import {
   MatDialogModule,
   MatProgressSpinnerModule,
   MatPaginatorModule,
+  MatCheckboxModule,
 } from '@angular/material';
 import { NgxsModule, Store } from '@ngxs/store';
 
@@ -44,6 +45,7 @@ import { CandidateStatusCommentDialogComponent } from './candidate/candidate-sta
     HttpClientModule,
     MatButtonModule,
     MatCardModule,
+    MatCheckboxModule,
     MatChipsModule,
     MatDialogModule,
     MatFormFieldModule,
