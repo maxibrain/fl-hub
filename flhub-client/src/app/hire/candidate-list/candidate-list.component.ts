@@ -59,7 +59,7 @@ export class CandidateListComponent implements OnInit {
       pageSize: parseInt(queryParams['pageSize'], 10) || 10,
     });
     this.filterForm.setValue({
-      showBad: queryParams['showBad'] || false,
+      showBad: queryParams['showBad'] === 'true',
     });
     this.onFilterChange();
     this._candidatesLoading$.next(true);
