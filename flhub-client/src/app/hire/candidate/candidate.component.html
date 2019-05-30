@@ -1,72 +1,81 @@
-<button type="button" (click)="update()">Update</button>
-<div *ngIf="candidate$ | async; let candidate">
-  <div [class]="'status status-' + candidate.tracker.status.toLowerCase()">
-    {{ candidate.tracker.status }}
-  </div>
-  <app-candidate-list-item [candidate]="candidate" [showStatus]="false" linkType="upwork"></app-candidate-list-item>
-  <div *ngIf="candidate.profile?.experience?.length">
-    <h3>Employment history</h3>
-    <mat-list>
-      <mat-list-item *ngFor="let e of candidate.profile.experience">
-        <h4 matLine>{{ e.exp_title_raw }} | {{ e.exp_company }}</h4>
-        <p matLine>{{ e.exp_from }} - {{ e.exp_to }}</p>
-        <p *ngIf="e.exp_comment" matLine>{{ e.exp_comment }}</p>
-      </mat-list-item>
-    </mat-list>
-  </div>
-  <div *ngIf="candidate.profile?.education?.length">
-    <h3>Education</h3>
-    <mat-list>
-      <mat-list-item *ngFor="let e of candidate.profile.education">
-        <h4 matLine>{{ e.ed_degree }}, {{ e.ed_area }} | {{ e.ed_school }}</h4>
-        <p matLine>{{ e.ed_from }} - {{ e.ed_to }}</p>
-      </mat-list-item>
-    </mat-list>
-  </div>
-  <div>
-    <button
-      *ngIf="candidate.tracker.status === 'INITIAL' || candidate.tracker.status === 'WATCH' || candidate.tracker.status === 'BAD'"
-      type="button"
-      mat-raised-button
-      color="primary"
-      (click)="good(candidate)"
-    >
-      <mat-icon>thumb_up</mat-icon>
-    </button>
-    <button *ngIf="candidate.tracker.status === 'INITIAL'" type="button" mat-raised-button color="default" (click)="watch(candidate)">
-      <mat-icon>visibility</mat-icon>
-    </button>
-    <a
-      *ngIf="candidate.tracker.status === 'GOOD' || candidate.tracker.status === 'REFUSED'"
-      href="https://www.upwork.com/ab/p/invitation/user/grakzovnsy9suhcthpszlg"
-      target="_blank"
-      mat-raised-button
-      (click)="copyUsername(candidate)"
-    >
-      <mat-icon>contact_mail</mat-icon>
-    </a>
-    <button
-      *ngIf="candidate.tracker.status === 'GOOD' || candidate.tracker.status === 'REFUSED'"
-      type="button"
-      mat-raised-button
-      (click)="invited(candidate)"
-    >
-      <mat-icon>mail_outline</mat-icon>
-    </button>
-    <button *ngIf="candidate.tracker.status === 'INVITED'" type="button" mat-raised-button (click)="hired(candidate)">
-      <mat-icon>business</mat-icon>
-    </button>
-    <button *ngIf="candidate.tracker.status === 'INVITED'" type="button" mat-raised-button (click)="refused(candidate)">
-      <mat-icon>close</mat-icon>
-    </button>
-    <button
-      *ngIf="candidate.tracker.status !== 'BAD' && candidate.tracker.status !== 'REFUSED'"
-      type="button"
-      mat-raised-button
-      color="warn"
-      (click)="bad(candidate)"
-    >
-      <mat-icon>thumb_down</mat-icon>
-    </button>
-  </div>
+<div *ngIf="loading$ | async; else candidateTmpl" class="d-flex justify-content-center">
+  <mat-spinner></mat-spinner>
 </div>
+<ng-template #candidateTmpl>
+  <div>
+    <button type="button" mat-raised-button color="primary" (click)="update()">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+  <div *ngIf="candidate$ | async; let candidate">
+    <div [class]="'status status-' + candidate.tracker.status.toLowerCase()">
+      {{ candidate.tracker.status }}
+    </div>
+    <app-candidate-list-item [candidate]="candidate" [showStatus]="false" linkType="upwork"></app-candidate-list-item>
+    <div *ngIf="candidate.profile?.experience?.length">
+      <h3>Employment history</h3>
+      <mat-list>
+        <mat-list-item *ngFor="let e of candidate.profile.experience">
+          <h4 matLine>{{ e.exp_title_raw }} | {{ e.exp_company }}</h4>
+          <p matLine>{{ e.exp_from }} - {{ e.exp_to }}</p>
+          <p *ngIf="e.exp_comment" matLine>{{ e.exp_comment }}</p>
+        </mat-list-item>
+      </mat-list>
+    </div>
+    <div *ngIf="candidate.profile?.education?.length">
+      <h3>Education</h3>
+      <mat-list>
+        <mat-list-item *ngFor="let e of candidate.profile.education">
+          <h4 matLine>{{ e.ed_degree }}, {{ e.ed_area }} | {{ e.ed_school }}</h4>
+          <p matLine>{{ e.ed_from }} - {{ e.ed_to }}</p>
+        </mat-list-item>
+      </mat-list>
+    </div>
+    <div>
+      <button
+        *ngIf="candidate.tracker.status === 'INITIAL' || candidate.tracker.status === 'WATCH' || candidate.tracker.status === 'BAD'"
+        type="button"
+        mat-raised-button
+        color="primary"
+        (click)="good(candidate)"
+      >
+        <mat-icon>thumb_up</mat-icon>
+      </button>
+      <button *ngIf="candidate.tracker.status === 'INITIAL'" type="button" mat-raised-button color="default" (click)="watch(candidate)">
+        <mat-icon>visibility</mat-icon>
+      </button>
+      <a
+        *ngIf="candidate.tracker.status === 'GOOD' || candidate.tracker.status === 'REFUSED'"
+        href="https://www.upwork.com/ab/p/invitation/user/grakzovnsy9suhcthpszlg"
+        target="_blank"
+        mat-raised-button
+        (click)="copyUsername(candidate)"
+      >
+        <mat-icon>contact_mail</mat-icon>
+      </a>
+      <button
+        *ngIf="candidate.tracker.status === 'GOOD' || candidate.tracker.status === 'REFUSED'"
+        type="button"
+        mat-raised-button
+        (click)="invited(candidate)"
+      >
+        <mat-icon>mail_outline</mat-icon>
+      </button>
+      <button *ngIf="candidate.tracker.status === 'INVITED'" type="button" mat-raised-button (click)="hired(candidate)">
+        <mat-icon>business</mat-icon>
+      </button>
+      <button *ngIf="candidate.tracker.status === 'INVITED'" type="button" mat-raised-button (click)="refused(candidate)">
+        <mat-icon>close</mat-icon>
+      </button>
+      <button
+        *ngIf="candidate.tracker.status !== 'BAD' && candidate.tracker.status !== 'REFUSED'"
+        type="button"
+        mat-raised-button
+        color="warn"
+        (click)="bad(candidate)"
+      >
+        <mat-icon>thumb_down</mat-icon>
+      </button>
+    </div>
+  </div>
+</ng-template>

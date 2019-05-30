@@ -1,7 +1,9 @@
-<mat-spinner *ngIf="candidatesLoading$ | async; else candidates"></mat-spinner>
+<div *ngIf="candidatesLoading$ | async; else candidates" class="d-flex justify-content-center">
+  <mat-spinner></mat-spinner>
+</div>
 <ng-template #candidates>
   <div class="d-flex flex-wrap align-items-center flex-row justify-content-between">
-    <button type="button" mat-raised-button color="primary" (click)="update()">Update candidates</button>
+    <button type="button" mat-raised-button color="primary" (click)="update()"><mat-icon>refresh</mat-icon></button>
     <div class="d-flex flex-row align-items-center justify-content-end">
       <form [formGroup]="filterForm">
         <mat-checkbox formControlName="showBad" (change)="onFilterChange()">Show bad candidates</mat-checkbox>

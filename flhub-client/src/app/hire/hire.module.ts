@@ -15,6 +15,8 @@ import {
   MatPaginatorModule,
   MatCheckboxModule,
   MatMenuModule,
+  MatSnackBarModule,
+  MAT_SNACK_BAR_DEFAULT_OPTIONS,
 } from '@angular/material';
 import { NgxsModule, Store } from '@ngxs/store';
 
@@ -57,9 +59,11 @@ import { CandidateStatusCommentDialogComponent } from './candidate/candidate-sta
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatSliderModule,
+    MatSnackBarModule,
     NgxsModule.forFeature([HireState]),
   ],
   entryComponents: [CandidateStatusCommentDialogComponent, CreateQueryComponent],
+  providers: [{ provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } }],
 })
 export class HireModule {
   constructor(store: Store) {
