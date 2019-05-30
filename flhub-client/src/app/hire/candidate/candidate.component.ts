@@ -11,6 +11,15 @@ import { MatDialog } from '@angular/material';
 import { CandidateStatusCommentDialogComponent } from './candidate-status-comment-dialog.component';
 import { DomSanitizer } from '@angular/platform-browser';
 
+const copyToClipboard = str => {
+  const el = document.createElement('textarea');
+  el.value = str;
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+};
+
 @Component({
   selector: 'app-candidate',
   templateUrl: './candidate.component.html',
@@ -75,6 +84,43 @@ export class CandidateComponent implements OnInit {
           searchName: this.searchName,
           id: candidate.profile.id,
           status: CandidateStatus.BAD,
+          comment,
+        }),
+      ),
+    );
+  }
+
+  copyUsername(candidate: CandidateDto) {
+    copyToClipboard(candidate.profile.username);
+  }
+
+  invited(candidate: CandidateDto) {
+    this.store.dispatch(
+      new UpdateCandidateStatus({
+        searchName: this.searchName,
+        id: candidate.profile.id,
+        status: CandidateStatus.INVITED,
+      }),
+    );
+  }
+
+  hired(candidate: CandidateDto) {
+    this.store.dispatch(
+      new UpdateCandidateStatus({
+        searchName: this.searchName,
+        id: candidate.profile.id,
+        status: CandidateStatus.HIRED,
+      }),
+    );
+  }
+
+  refused(candidate: CandidateDto) {
+    this.promptComment().subscribe(comment =>
+      this.store.dispatch(
+        new UpdateCandidateStatus({
+          searchName: this.searchName,
+          id: candidate.profile.id,
+          status: CandidateStatus.REFUSED,
           comment,
         }),
       ),

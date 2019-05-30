@@ -1,8 +1,8 @@
 <mat-spinner *ngIf="candidatesLoading$ | async; else candidates"></mat-spinner>
 <ng-template #candidates>
-  <div class="d-flex flex-row justify-content-between">
+  <div class="d-flex flex-wrap align-items-center flex-row justify-content-between">
     <button type="button" mat-raised-button color="primary" (click)="update()">Update candidates</button>
-    <div class="d-flex flex-row justify-content-end">
+    <div class="d-flex flex-row align-items-center justify-content-end">
       <form [formGroup]="filterForm">
         <mat-checkbox formControlName="showBad" (change)="onFilterChange()">Show bad candidates</mat-checkbox>
       </form>

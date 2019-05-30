@@ -24,10 +24,49 @@
     </mat-list>
   </div>
   <div>
-    <button *ngIf="candidate.tracker.status !== 'GOOD'" type="button" mat-raised-button color="primary" (click)="good(candidate)">
-      Good
+    <button
+      *ngIf="candidate.tracker.status === 'INITIAL' || candidate.tracker.status === 'WATCH' || candidate.tracker.status === 'BAD'"
+      type="button"
+      mat-raised-button
+      color="primary"
+      (click)="good(candidate)"
+    >
+      <mat-icon>thumb_up</mat-icon>
     </button>
-    <button type="button" mat-raised-button color="default" (click)="watch(candidate)">Watch</button>
-    <button *ngIf="candidate.tracker.status !== 'BAD'" type="button" mat-raised-button color="warn" (click)="bad(candidate)">Bad</button>
+    <button *ngIf="candidate.tracker.status === 'INITIAL'" type="button" mat-raised-button color="default" (click)="watch(candidate)">
+      <mat-icon>visibility</mat-icon>
+    </button>
+    <a
+      *ngIf="candidate.tracker.status === 'GOOD' || candidate.tracker.status === 'REFUSED'"
+      href="https://www.upwork.com/ab/p/invitation/user/grakzovnsy9suhcthpszlg"
+      target="_blank"
+      mat-raised-button
+      (click)="copyUsername(candidate)"
+    >
+      <mat-icon>contact_mail</mat-icon>
+    </a>
+    <button
+      *ngIf="candidate.tracker.status === 'GOOD' || candidate.tracker.status === 'REFUSED'"
+      type="button"
+      mat-raised-button
+      (click)="invited(candidate)"
+    >
+      <mat-icon>mail_outline</mat-icon>
+    </button>
+    <button *ngIf="candidate.tracker.status === 'INVITED'" type="button" mat-raised-button (click)="hired(candidate)">
+      <mat-icon>business</mat-icon>
+    </button>
+    <button *ngIf="candidate.tracker.status === 'INVITED'" type="button" mat-raised-button (click)="refused(candidate)">
+      <mat-icon>close</mat-icon>
+    </button>
+    <button
+      *ngIf="candidate.tracker.status !== 'BAD' && candidate.tracker.status !== 'REFUSED'"
+      type="button"
+      mat-raised-button
+      color="warn"
+      (click)="bad(candidate)"
+    >
+      <mat-icon>thumb_down</mat-icon>
+    </button>
   </div>
 </div>
