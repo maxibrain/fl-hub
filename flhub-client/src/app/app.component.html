@@ -1,5 +1,19 @@
-<div class="container">
-  <div class="content">
-    <router-outlet></router-outlet>
-  </div>
-</div>
+<mat-sidenav-container>
+  <mat-sidenav #sidenav mode="over">
+    <mat-nav-list>
+      <a mat-list-item routerLink="hire" (click)="sidenav.toggle()">Hire</a>
+      <a mat-list-item routerLink="financies" (click)="sidenav.toggle()">Financies</a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <button type="button" mat-icon-button (click)="sidenav.toggle()" class="m-1">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="container">
+      <div class="content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

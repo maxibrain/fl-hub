@@ -1,3 +1,1 @@
-export interface CandidateHistory {
-  
-}
+export type CandidateHistory = any;

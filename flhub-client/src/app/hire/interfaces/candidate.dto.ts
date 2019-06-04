@@ -8,5 +8,6 @@ export interface CandidateDto {
 export interface CandidateProfile {
   id: string;
   name: string;
+  rate: number;
   username: string;
 }
