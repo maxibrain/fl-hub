@@ -1,6 +1,6 @@
 import { Injectable, Logger, HttpService } from '@nestjs/common';
 import { getObjectPatch, applyObjectPatch, isEmpty, applyObjectPatches, UpworkApiService } from '../../../shared';
-import { Candidate, SearchCandidatesOptions, fromProfile } from '../../interfaces';
+import { CandidateProfile, SearchCandidatesOptions, fromProfile } from '../../interfaces';
 import { FreelancerProfilePatch } from '../../entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
@@ -15,18 +15,18 @@ export class ProfileService {
     @InjectRepository(FreelancerProfilePatch) private profilePatches: MongoRepository<FreelancerProfilePatch>,
   ) {}
 
-  async get(id: string): Promise<Candidate> {
+  async get(id: string): Promise<CandidateProfile> {
     const patches = await this.profilePatches.find({ where: { profileId: id } });
-    return applyObjectPatches({} as Candidate, patches.map(p => p.patch));
+    return applyObjectPatches({} as CandidateProfile, patches.map(p => p.patch));
   }
 
-  async list(ids: string[]): Promise<Candidate[]> {
+  async list(ids: string[]): Promise<CandidateProfile[]> {
     const patches = await this.profilePatches.find({ where: { profileId: { $in: ids } } });
-    const result: Candidate[] = [];
+    const result: CandidateProfile[] = [];
     patches.forEach(p => {
       let i = result.findIndex(r => r.id === p.profileId);
       if (i < 0) {
-        i = result.push({ id: p.profileId } as Candidate) - 1;
+        i = result.push({ id: p.profileId } as CandidateProfile) - 1;
       }
       let updated = p.id.getTimestamp();
       if (result[i].updated && result[i].updated > updated) {
@@ -43,7 +43,7 @@ export class ProfileService {
       this.fetchApi(id),
       this.crawlPage(id).catch(err => ({ availability: { capacity: { nid: null } } })),
     ]);
-    const profile: Candidate = {
+    const profile: CandidateProfile = {
       ...apiProfile,
       availability: crawledProfile.availability.capacity.nid,
     } as any;
@@ -53,7 +53,7 @@ export class ProfileService {
     return await this.save(id, profile);
   }
 
-  async save(id: string, profile: Candidate) {
+  async save(id: string, profile: CandidateProfile) {
     const stored = await this.get(profile.id);
     const patch = getObjectPatch(profile, stored);
     if (!isEmpty(patch)) {
@@ -66,7 +66,7 @@ export class ProfileService {
     return stored;
   }
 
-  async search(options: SearchCandidatesOptions): Promise<Candidate[]> {
+  async search(options: SearchCandidatesOptions): Promise<CandidateProfile[]> {
     const pageSize = 100;
     const initialOptions: FreelancerSearchParams = {
       q: options.query,
@@ -92,7 +92,7 @@ export class ProfileService {
         ...initialOptions,
         paging: `${offset};${pageSize}`,
       };
-      return new Promise<Candidate[]>(resolve => {
+      return new Promise<CandidateProfile[]>(resolve => {
         setTimeout(
           () =>
             searchFn(pageOptions)
@@ -116,7 +116,7 @@ export class ProfileService {
     );
   }
 
-  private async fetchApi(id: string): Promise<Candidate> {
+  private async fetchApi(id: string): Promise<CandidateProfile> {
     const profile = await this.api.getProfile(id);
     Logger.debug(profile);
     return fromProfile(profile);

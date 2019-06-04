@@ -1,7 +1,8 @@
-import { Candidate } from './candidate';
+import { CandidateProfile } from './candidateProfile';
 import { CandidateTracker } from './candidateTracker';
 
 export interface CandidateDto {
-  profile: Candidate;
+  profile: CandidateProfile;
   tracker: CandidateTracker;
+  history: CandidateHistory;
 }

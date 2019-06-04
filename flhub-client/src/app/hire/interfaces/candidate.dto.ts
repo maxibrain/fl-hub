@@ -1,6 +1,12 @@
 import { CandidateTracker } from './candidateTracker';
 
 export interface CandidateDto {
-  profile: any;
+  profile: CandidateProfile;
   tracker: CandidateTracker;
+}
+
+export interface CandidateProfile {
+  id: string;
+  name: string;
+  username: string;
 }

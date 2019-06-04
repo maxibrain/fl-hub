@@ -5,7 +5,7 @@ import { Observable, BehaviorSubject, combineLatest, ReplaySubject } from 'rxjs'
 import { CandidateDto } from '../interfaces/candidate.dto';
 import { ListCandidates, FetchCandidates } from '../state/hire.actions';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { pluck, mergeMap, map, take } from 'rxjs/operators';
+import { pluck, mergeMap, map, take, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
@@ -19,6 +19,7 @@ export class CandidateListComponent implements OnInit {
   private readonly _pagination$ = new ReplaySubject<{ pageIndex: number; pageSize: number }>(1);
   private readonly _filter$ = new ReplaySubject<{ showBad: boolean }>(1);
   private readonly _sortBy$ = new ReplaySubject<{ key: string; direction: 'asc' | 'desc' }>(1);
+  private readonly _search$ = new ReplaySubject<string>(1);
   private readonly _sortings: { [key: string]: (c: CandidateDto) => any } = {
     rate: c => c.profile.rate,
   };
@@ -41,15 +42,22 @@ export class CandidateListComponent implements OnInit {
         mergeMap(name => store.select(HireState.candidates(name))),
       ),
       this._filter$,
+      this._search$.pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+      ),
       this._sortBy$,
     ).pipe(
-      map(([candidates, filter, sortBy]) => {
+      map(([candidates, filter, search, sortBy]) => {
         candidates = candidates.filter(c => {
           if (!filter.showBad && c.tracker.status === 'BAD') {
             return false;
           }
           return true;
         });
+        if (search) {
+          candidates = candidates.filter(c => c.profile.name.toLowerCase().indexOf(search.toLowerCase()) > -1);
+        }
         if (sortBy) {
           const fn = this._sortings[sortBy.key];
           if (fn) {
@@ -82,6 +90,7 @@ export class CandidateListComponent implements OnInit {
       showBad: queryParams['showBad'] === 'true',
     });
     this.onFilterChange();
+    this._search$.next('');
     if (queryParams['sortBy']) {
       this._sortBy$.next({ key: queryParams['sortBy'], direction: queryParams['sortDir'] || 'asc' });
     } else {
@@ -130,5 +139,9 @@ export class CandidateListComponent implements OnInit {
         relativeTo: this.route,
       });
     }
+  }
+
+  onSearch(e: { target: HTMLInputElement }) {
+    this._search$.next(e.target.value);
   }
 }

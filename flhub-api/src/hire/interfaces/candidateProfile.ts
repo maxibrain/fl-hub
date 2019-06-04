@@ -2,7 +2,7 @@ import { FreelancerProfile, ProfileType } from 'upwork-api/lib/routers/freelance
 import { Education, Experience } from 'upwork-api/lib/routers/freelancers/profile';
 
 // tslint:disable-next-line:no-empty-interface
-export interface Candidate {
+export interface CandidateProfile {
   id: string;
   skills: string[];
   categories2?: string[];
@@ -24,7 +24,7 @@ export interface Candidate {
   updated?: Date;
 }
 
-export function fromProfile(p: FreelancerProfile): Candidate {
+export function fromProfile(p: FreelancerProfile): CandidateProfile {
   const result = {
     ...p,
     feedback: p.feedback ? parseFloat(p.feedback) : undefined,
