@@ -28,7 +28,7 @@
   </div>
   <div>
     <mat-form-field class="w-100">
-      <input matInput placeholder="Search candidates" (input)="onSearch($event)" />
+      <input matInput placeholder="Search candidates" [value]="search$ | async" (input)="onSearch($event)" />
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
   </div>
