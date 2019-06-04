@@ -11,4 +11,5 @@ export interface CandidateProfile {
   rate: number;
   username: string;
   availability: 'fullTime' | 'partTime' | 'notSure' | null;
+  updated: Date;
 }

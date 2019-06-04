@@ -22,6 +22,7 @@ export class CandidateListComponent implements OnInit {
   private readonly _search$ = new ReplaySubject<string>(1);
   private readonly _sortings: { [key: string]: (c: CandidateDto) => any } = {
     rate: c => c.profile.rate,
+    updated: c => c.profile.updated,
   };
   readonly search$ = this._search$.asObservable();
   readonly pageIndex$ = this._pagination$.pipe(pluck('pageIndex'));
