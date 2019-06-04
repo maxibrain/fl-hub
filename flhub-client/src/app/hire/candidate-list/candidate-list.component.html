@@ -6,7 +6,8 @@
     <button type="button" mat-raised-button color="primary" (click)="update()"><mat-icon>refresh</mat-icon></button>
     <div class="d-flex flex-row align-items-center justify-content-end">
       <form [formGroup]="filterForm">
-        <mat-checkbox formControlName="showBad" (change)="onFilterChange()">Show bad candidates</mat-checkbox>
+        <mat-checkbox formControlName="showBad" (change)="onFilterChange()">Show BAD</mat-checkbox>
+        <mat-checkbox formControlName="hidePt" (change)="onFilterChange()">Hide PT/OO</mat-checkbox>
       </form>
       <ng-container *ngIf=""></ng-container>
       <button mat-button [matMenuTriggerFor]="menu">Sort By</button>

@@ -17,7 +17,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class CandidateListComponent implements OnInit {
   private readonly _candidatesLoading$ = new BehaviorSubject(false);
   private readonly _pagination$ = new ReplaySubject<{ pageIndex: number; pageSize: number }>(1);
-  private readonly _filter$ = new ReplaySubject<{ showBad: boolean }>(1);
+  private readonly _filter$ = new ReplaySubject<{ showBad: boolean; hidePt: boolean }>(1);
   private readonly _sortBy$ = new ReplaySubject<{ key: string; direction: 'asc' | 'desc' }>(1);
   private readonly _search$ = new ReplaySubject<string>(1);
   private readonly _sortings: { [key: string]: (c: CandidateDto) => any } = {
@@ -36,6 +36,7 @@ export class CandidateListComponent implements OnInit {
   constructor(fb: FormBuilder, private store: Store, private route: ActivatedRoute, private router: Router) {
     this.filterForm = fb.group({
       showBad: [false],
+      hidePt: [false],
     });
     this.candidates$ = combineLatest(
       route.params.pipe(
@@ -79,6 +80,9 @@ export class CandidateListComponent implements OnInit {
       map(([candidates, filter, search, sortBy]) => {
         candidates = candidates.filter(c => {
           if (!filter.showBad && c.tracker.status === 'BAD') {
+            return false;
+          }
+          if (filter.hidePt && (c.profile.availability === 'notSure' || c.profile.availability === 'partTime')) {
             return false;
           }
           return true;
@@ -127,6 +131,7 @@ export class CandidateListComponent implements OnInit {
     });
     this.filterForm.setValue({
       showBad: queryParams['showBad'] === 'true',
+      hidePt: queryParams['hidePt'] === 'true',
     });
     this.onFilterChange();
     this._search$.next(queryParams['q'] || '');
