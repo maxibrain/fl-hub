@@ -7,9 +7,16 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <button type="button" mat-icon-button (click)="sidenav.toggle()" class="m-1">
-      <mat-icon>menu</mat-icon>
-    </button>
+    <mat-toolbar color="primary">
+      <span>Freelance Hub</span>
+
+      <!-- This fills the remaining space of the current row -->
+      <span class="fill-space"></span>
+
+      <button type="button" mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </mat-toolbar>
     <div class="container">
       <div class="content">
         <router-outlet></router-outlet>

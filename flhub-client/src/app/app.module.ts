@@ -12,7 +12,8 @@ import { environment } from '../environments/environment';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material';
+import { MatListModule } from '@angular/material/list';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,6 +26,7 @@ import { MatListModule } from '@angular/material';
     MatButtonModule,
     MatListModule,
     MatSidenavModule,
+    MatToolbarModule,
     NgxsModule.forRoot([], { developmentMode: !environment.production }),
     NgxsFormPluginModule.forRoot(),
     NgxsStoragePluginModule.forRoot({ key: ['financies.salaryForm'] }),
