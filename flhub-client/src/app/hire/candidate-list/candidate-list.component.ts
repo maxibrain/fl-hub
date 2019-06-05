@@ -80,7 +80,7 @@ export class CandidateListComponent implements OnInit {
     ).pipe(
       map(([candidates, filter, search, sortBy]) => {
         candidates = candidates.filter(c => {
-          if (!filter.showBad && c.tracker.status === 'BAD') {
+          if (!filter.showBad && (c.tracker.status === 'BAD' || c.tracker.status === 'REFUSED')) {
             return false;
           }
           if (filter.hidePt && (c.profile.availability === 'notSure' || c.profile.availability === 'partTime')) {
