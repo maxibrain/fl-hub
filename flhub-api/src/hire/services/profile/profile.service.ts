@@ -118,7 +118,6 @@ export class ProfileService {
 
   private async fetchApi(id: string): Promise<CandidateProfile> {
     const profile = await this.api.getProfile(id);
-    Logger.debug(profile);
     return fromProfile(profile);
   }
 
@@ -146,7 +145,7 @@ export class ProfileService {
         if (matches) {
           const json = matches[0].slice(matches[0].indexOf('{'), matches[0].lastIndexOf(';'));
           const model = JSON.parse(json);
-          Logger.debug(model);
+          Logger.debug(model, 'Upwork Crawler');
           if (model && model.profileSettings && model.profileSettings.profile) {
             return model.profileSettings.profile;
           } else {

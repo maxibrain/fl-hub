@@ -81,7 +81,7 @@ export class UpworkApiService {
           description: profile.dev_blurb,
           portrait_100: profile.dev_portrait_100,
           profile_type: profile.dev_ac_agencies ? 'Agency' : 'Independent',
-          feedback: profile.dev_tot_feedback,
+          feedback: profile.dev_adj_score,
           rate: profile.dev_bill_rate,
           skills,
           education: profile.education

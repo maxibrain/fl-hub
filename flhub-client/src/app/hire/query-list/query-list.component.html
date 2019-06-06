@@ -1,7 +1,12 @@
-<button class="btn btn-primary" type="button" (click)="addQuery()">Add Search Query</button>
-
 <div class="list-group">
   <a class="list-group-item list-group-item-action" *ngFor="let query of list$ | async" [routerLink]="[query.name, 'candidates']">{{
     query.name
   }}</a>
+</div>
+
+<div class="mt-1 d-flex justify-content-end">
+  <button mat-raised-button color="primary" type="button" (click)="addQuery()">
+    <mat-icon>add</mat-icon>
+    Add Search Query
+  </button>
 </div>
