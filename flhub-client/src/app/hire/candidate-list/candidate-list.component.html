@@ -5,13 +5,20 @@
   <div class="d-flex flex-wrap align-items-center flex-row justify-content-between mb-1">
     <button type="button" mat-raised-button color="primary" (click)="update()"><mat-icon>refresh</mat-icon></button>
     <div class="d-flex flex-row align-items-center justify-content-end">
-      <form [formGroup]="filterForm">
-        <mat-checkbox formControlName="showBad" (change)="onFilterChange()">Show BAD/REFUSED</mat-checkbox>
-        <mat-checkbox formControlName="hidePt" (change)="onFilterChange()">Hide PT/OO</mat-checkbox>
-      </form>
-      <ng-container *ngIf=""></ng-container>
-      <button mat-button [matMenuTriggerFor]="menu">Sort By</button>
-      <mat-menu #menu="matMenu">
+      <button mat-button [matMenuTriggerFor]="filterMenu">Filter</button>
+      <mat-menu #filterMenu="matMenu">
+        <ng-container *ngIf="filter$ | async as filter">
+          <button mat-menu-item *ngFor="let o of filterOptions" (click)="onFilterChange(filter, o.key)">
+            <mat-icon *ngIf="filter[o.key]; else filterFalse">visibility</mat-icon>
+            <ng-template #filterFalse>
+              <mat-icon>visibility_off</mat-icon>
+            </ng-template>
+            {{ o.text }}
+          </button>
+        </ng-container>
+      </mat-menu>
+      <button mat-button [matMenuTriggerFor]="sortMenu">Sort By</button>
+      <mat-menu #sortMenu="matMenu">
         <button mat-menu-item *ngFor="let sortingKey of sortingKeys" (click)="sortBy(sortingKey)">
           <ng-container *ngIf="sortBy$ | async; let sortBy">
             <ng-container *ngIf="sortBy.key === sortingKey">

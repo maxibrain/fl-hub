@@ -17,28 +17,50 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class CandidateListComponent implements OnInit {
   private readonly _candidatesLoading$ = new BehaviorSubject(false);
   private readonly _pagination$ = new ReplaySubject<{ pageIndex: number; pageSize: number }>(1);
-  private readonly _filter$ = new ReplaySubject<{ showBad: boolean; hidePt: boolean }>(1);
+  private readonly _filter$ = new ReplaySubject<{ [key: string]: boolean }>(1);
   private readonly _sortBy$ = new ReplaySubject<{ key: string; direction: 'asc' | 'desc' }>(1);
   private readonly _search$ = new ReplaySubject<string>(1);
   private readonly _sortings: { [key: string]: (c: CandidateDto) => any } = {
     rate: c => c.profile.rate,
     updated: c => c.profile.updated,
   };
+  readonly filterOptions = [
+    {
+      key: 'pt',
+      text: 'Part time',
+    },
+    {
+      key: 'oo',
+      text: 'Open for offers',
+    },
+    {
+      key: 'bad',
+      text: 'Bad',
+    },
+    {
+      key: 'refused',
+      text: 'Refused',
+    },
+    {
+      key: 'invited',
+      text: 'Invited',
+    },
+    {
+      key: 'hired',
+      text: 'Hired',
+    },
+  ];
   readonly search$ = this._search$.asObservable();
   readonly pageIndex$ = this._pagination$.pipe(pluck('pageIndex'));
   readonly pageSize$ = this._pagination$.pipe(pluck('pageSize'));
   readonly candidatesLoading$ = this._candidatesLoading$.asObservable();
   readonly candidates$: Observable<CandidateDto[]>;
   readonly page$: Observable<CandidateDto[]>;
-  readonly filterForm: FormGroup;
   readonly sortingKeys = Object.keys(this._sortings);
   readonly sortBy$ = this._sortBy$.asObservable();
+  readonly filter$ = this._filter$.asObservable();
 
   constructor(fb: FormBuilder, private store: Store, private route: ActivatedRoute, private router: Router) {
-    this.filterForm = fb.group({
-      showBad: [false],
-      hidePt: [false],
-    });
     this.candidates$ = combineLatest(
       route.params.pipe(
         pluck<Params, string>('name'),
@@ -46,8 +68,15 @@ export class CandidateListComponent implements OnInit {
       ),
       this._filter$.pipe(
         tap(filter => {
+          console.log({ filter, keys: Object.keys(filter) });
           this.router.navigate(['.'], {
-            queryParams: { ...this.route.snapshot.queryParams, ...filter },
+            queryParams: {
+              ...this.route.snapshot.queryParams,
+              filter:
+                Object.keys(filter)
+                  .filter(i => filter[i])
+                  .join(',') || undefined,
+            },
             relativeTo: this.route,
           });
         }),
@@ -80,10 +109,22 @@ export class CandidateListComponent implements OnInit {
     ).pipe(
       map(([candidates, filter, search, sortBy]) => {
         candidates = candidates.filter(c => {
-          if (!filter.showBad && (c.tracker.status === 'BAD' || c.tracker.status === 'REFUSED')) {
+          if (!filter['bad'] && c.tracker.status === 'BAD') {
             return false;
           }
-          if (filter.hidePt && (c.profile.availability === 'notSure' || c.profile.availability === 'partTime')) {
+          if (!filter['refused'] && c.tracker.status === 'REFUSED') {
+            return false;
+          }
+          if (!filter['invited'] && c.tracker.status === 'INVITED') {
+            return false;
+          }
+          if (!filter['hired'] && c.tracker.status === 'HIRED') {
+            return false;
+          }
+          if (!filter['oo'] && c.profile.availability === 'notSure') {
+            return false;
+          }
+          if (!filter['pt'] && c.profile.availability === 'partTime') {
             return false;
           }
           return true;
@@ -130,11 +171,16 @@ export class CandidateListComponent implements OnInit {
       pageIndex: parseInt(queryParams['pageIndex'], 10) || 0,
       pageSize: parseInt(queryParams['pageSize'], 10) || 10,
     });
-    this.filterForm.setValue({
-      showBad: queryParams['showBad'] === 'true',
-      hidePt: queryParams['hidePt'] === 'true',
-    });
-    this.onFilterChange();
+
+    const filterParam = (queryParams['filter'] as String) || '';
+    const enabledFilters = filterParam.split(',').filter(f => !!f);
+    this._filter$.next(
+      enabledFilters.reduce((acc, v) => {
+        acc[v] = true;
+        return acc;
+      }, {}),
+    );
+
     this._search$.next(queryParams['q'] || '');
     if (queryParams['sortBy']) {
       this._sortBy$.next({ key: queryParams['sortBy'], direction: queryParams['sortDir'] || 'asc' });
@@ -154,8 +200,8 @@ export class CandidateListComponent implements OnInit {
     this._pagination$.next({ pageIndex, pageSize });
   }
 
-  onFilterChange() {
-    this._filter$.next(this.filterForm.value);
+  onFilterChange(filter: any, key: string) {
+    this._filter$.next({ ...filter, [key]: !filter[key] });
   }
 
   sortBy(sortingKey: string) {

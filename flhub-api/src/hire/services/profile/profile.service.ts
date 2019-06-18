@@ -1,5 +1,5 @@
 import { Injectable, Logger, HttpService } from '@nestjs/common';
-import { getObjectPatch, applyObjectPatch, isEmpty, applyObjectPatches, UpworkApiService } from '../../../shared';
+import { getObjectPatch, applyObjectPatch, isEmpty, applyObjectPatches, UpworkApiService, preventCircular } from '../../../shared';
 import { CandidateProfile, SearchCandidatesOptions, fromProfile } from '../../interfaces';
 import { FreelancerProfilePatch } from '../../entities';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -41,7 +41,14 @@ export class ProfileService {
   async fetch(id: string) {
     const [apiProfile, crawledProfile] = await Promise.all([
       this.fetchApi(id),
-      this.crawlPage(id).catch(err => ({ availability: { capacity: { nid: null } } })),
+      this.crawlPage(id).catch(err => {
+        try {
+          Logger.error(err, null, 'Upwork Crawler');
+        } catch {
+          Logger.error(Object.keys(err), null, 'Upwork Crawler');
+        }
+        return { availability: { capacity: { nid: null } } };
+      }),
     ]);
     const profile: CandidateProfile = {
       ...apiProfile,
