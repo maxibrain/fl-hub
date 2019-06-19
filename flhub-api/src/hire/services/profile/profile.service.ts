@@ -42,10 +42,11 @@ export class ProfileService {
     const [apiProfile, crawledProfile] = await Promise.all([
       this.fetchApi(id),
       this.crawlPage(id).catch(err => {
+        const res = err.response || err;
         try {
-          Logger.error(err, null, 'Upwork Crawler');
+          Logger.error(res, null, 'Upwork Crawler');
         } catch {
-          Logger.error(Object.keys(err), null, 'Upwork Crawler');
+          Logger.error(Object.keys(res), null, 'Upwork Crawler');
         }
         return { availability: { capacity: { nid: null } } };
       }),
@@ -56,7 +57,7 @@ export class ProfileService {
     } as any;
     // name is always short here
     delete profile.name;
-    Logger.debug(profile);
+    // Logger.debug(profile);
     return await this.save(id, profile);
   }
 
@@ -108,19 +109,31 @@ export class ProfileService {
                 resolve(filterProfiles(result.providers));
               })
               .catch(err => {
-                Logger.error(`Page ${i + 1} ERROR: ${err}`);
+                Logger.error(`Page ${i + 1}: ${JSON.stringify(err)}`);
                 resolve([]);
               }),
-          Math.floor(i / 10) * 2000,
+          i * 2000,
         );
       });
     });
 
-    return await Promise.all(promises).then(arrayOfResults =>
+    let candidates = await Promise.all(promises).then(arrayOfResults =>
       arrayOfResults
         .reduce((acc, providers) => [...acc, ...providers.filter(p => acc.map(a => a.id).indexOf(p.id) < 0)], initialProviders)
         .sort((a, b) => a.id.localeCompare(b.id)),
     );
+
+    if (options.availableHours) {
+      candidates = await Promise.all(
+        candidates.map((c, i) =>
+          new Promise(resolve => setTimeout(() => resolve(), 2000 * i))
+            .then(() => this.fetch(c.id))
+            .then(candidate => ({ ...c, ...candidate })),
+        ),
+      );
+    }
+
+    return candidates;
   }
 
   private async fetchApi(id: string): Promise<CandidateProfile> {
@@ -128,8 +141,27 @@ export class ProfileService {
     return fromProfile(profile);
   }
 
+  private proxyIndex = -1;
+  private proxies: Array<{ host: string; port: number }> = [
+    '1.1.170.101:8080',
+    '213.100.168.84:41677',
+    '47.254.94.44:443',
+    '195.200.64.8:48885',
+  ].map(s => {
+    const parts = s.split(':');
+    return { host: parts[0], port: parseInt(parts[1], 10) };
+  });
+
+  private getNextProxy() {
+    this.proxyIndex++;
+    if (this.proxyIndex >= this.proxies.length) {
+      this.proxyIndex = 0;
+    }
+    return this.proxies[this.proxyIndex];
+  }
+
   private async crawlPage(id: string) {
-    const reqHeaders = {
+    const headers = {
       ['accept']: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
       ['accept-language']: 'en-US,en;q=0.9,ru;q=0.8,uk;q=0.7',
       ['cache-control']: 'max-age=0',
@@ -138,11 +170,23 @@ export class ProfileService {
       ['user-agent']: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36',
     };
 
+    const proxy = this.getNextProxy();
+
     return await this.http
       .get('https://www.upwork.com/freelancers/' + id, {
-        headers: reqHeaders,
+        headers,
+        proxy,
       })
       .toPromise()
+      .catch(err => {
+        let details;
+        try {
+          details = JSON.stringify(err);
+        } catch {
+          details = '<cannot serialize>';
+        }
+        throw new Error(`Cannot get page using proxy ${proxy.host}:${proxy.port}.\r\nDetails: ${details}`);
+      })
       .then(res => {
         return Buffer.from(res.data, 'utf8');
       })

@@ -67,7 +67,7 @@ export class UpworkApiService {
         if (err) {
           return reject(err);
         }
-        Logger.debug(res, 'Upwork API');
+        // Logger.debug(res, 'Upwork API');
         const { profile } = res;
         const skills = (Array.isArray(profile.skills.skill) ? profile.skills.skill : [profile.skills.skill])
           .sort((a, b) => (parseInt(a.skl_rank, 10) > parseInt(b.skl_rank, 10) ? 1 : -1))
