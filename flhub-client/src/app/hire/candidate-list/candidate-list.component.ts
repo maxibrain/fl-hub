@@ -5,7 +5,7 @@ import { Observable, BehaviorSubject, combineLatest, ReplaySubject } from 'rxjs'
 import { CandidateDto } from '../interfaces/candidate.dto';
 import { ListCandidates, FetchCandidates } from '../state/hire.actions';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { pluck, mergeMap, map, take, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+import { pluck, mergeMap, map, take, debounceTime, distinctUntilChanged, tap, finalize } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
@@ -188,12 +188,18 @@ export class CandidateListComponent implements OnInit {
       this._sortBy$.next(null);
     }
     this._candidatesLoading$.next(true);
-    this.store.dispatch(new ListCandidates(this.route.snapshot.params['name'])).subscribe(() => this._candidatesLoading$.next(false));
+    this.store
+      .dispatch(new ListCandidates(this.route.snapshot.params['name']))
+      .pipe(finalize(() => this._candidatesLoading$.next(false)))
+      .subscribe();
   }
 
   update() {
     this._candidatesLoading$.next(true);
-    this.store.dispatch(new FetchCandidates(this.route.snapshot.params['name'])).subscribe(() => this._candidatesLoading$.next(false));
+    this.store
+      .dispatch(new FetchCandidates(this.route.snapshot.params['name']))
+      .pipe(finalize(() => this._candidatesLoading$.next(false)))
+      .subscribe();
   }
 
   onPageChanged({ pageIndex, pageSize }: any) {
