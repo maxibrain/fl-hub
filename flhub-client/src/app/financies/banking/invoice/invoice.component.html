@@ -1,0 +1,89 @@
+<form (ngSubmit)="generate()" [formGroup]="form" novalidate>
+  <div class="d-flex justify-content-between">
+    <div class="d-flex flex-column">
+      <div style="font-size: 0.9em">
+        <mat-form-field>
+          <textarea matInput rows="5" formControlName="from" [readonly]="true"></textarea>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <mat-label>Bill To</mat-label>
+          <mat-select formControlName="client" placeholder="Client" required>
+            <mat-option *ngFor="let client of clients$ | async" [value]="client">
+              {{ client.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column">
+      <div>
+        <mat-form-field>
+          <input type="text" matInput placeholder="Invoice #" formControlName="invoiceNumber" required />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <input matInput [matDatepicker]="picker" placeholder="Date" formControlName="date" required />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Item</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Rate</th>
+          <th scope="col">Amount</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let itemForm of form.get('items').controls">
+          <td>
+            <mat-form-field>
+              <input type="text" matInput [formControl]="itemForm.get('name')" required />
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="short">
+              <input type="number" matInput [formControl]="itemForm.get('quantity')" required />
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="short">
+              <input type="number" matInput [formControl]="itemForm.get('unit_cost')" required />
+            </mat-form-field>
+          </td>
+          <td>
+            <div class="item-cost">{{ itemForm.get('quantity').value * itemForm.get('unit_cost').value | currency }}</div>
+          </td>
+          <td>
+            <button type="button" mat-icon-button (click)="deleteItem(itemForm)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div>
+      <button mat-raised-button type="button" (click)="addItem()">Add Item</button>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end">
+    <div>Total: {{ total$ | async | currency }}</div>
+  </div>
+
+  <div>
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Generate invoice</button>
+  </div>
+</form>
