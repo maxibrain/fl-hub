@@ -21,9 +21,10 @@ import { FinanciesState } from './state/financies.state';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { BankingComponent } from './banking/banking.component';
 import { InvoiceComponent } from './banking/invoice/invoice.component';
+import { OtpToTaxerComponent } from './banking/otp-to-taxer/otp-to-taxer.component';
 
 @NgModule({
-  declarations: [SalaryComponent, BankingComponent, InvoiceComponent],
+  declarations: [SalaryComponent, BankingComponent, InvoiceComponent, OtpToTaxerComponent],
   imports: [
     CommonModule,
     FormsModule,
