@@ -1,0 +1,7 @@
+dist
+e2e
+node_modules
+.editorconfig
+.gitignore
+proxy.conf.js
+README.md

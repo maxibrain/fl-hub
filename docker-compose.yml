@@ -1,0 +1,49 @@
+version: '3'
+services:
+  api:
+    image: node:11-alpine
+    volumes:
+      - ./flhub-api:/usr/src/flhub-api
+    working_dir: /usr/src/flhub-api
+    command: npm run start:prod
+    environment:
+      - TYPEORM_CONNECTION=mongodb
+      - TYPEORM_DATABASE=${MONGO_DATABASE}
+      - TYPEORM_HOST=db
+      - TYPEORM_USERNAME=${MONGO_USERNAME}
+      - TYPEORM_PASSWORD=${MONGO_PASSWORD}
+      - TYPEORM_PORT=27017
+      - TYPEORM_SYNCHRONIZE=false
+      - TYPEORM_LOGGING=true
+      - TYPEORM_ENTITIES=dist/**/*.entity.js
+      - TYPEORM_MIGRATIONS=dist/**/*.migration.js
+      - UPWORK_CONSUMER_KEY=${UPWORK_CONSUMER_KEY}
+      - UPWORK_CONSUMER_SECRET=${UPWORK_CONSUMER_SECRET}
+      - UPWORK_ACCESS_TOKEN=${UPWORK_ACCESS_TOKEN}
+      - UPWORK_ACCESS_SECRET=${UPWORK_ACCESS_SECRET}
+    ports:
+      - 3000:3000
+    networks:
+      - flhub-network
+  web:
+    build: ./flhub-client
+    image: flhub-client:0.1
+    ports:
+      - 4200:80
+    networks:
+      - flhub-network
+  db:
+    image: mongo
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    restart: always
+    volumes:
+      - ./flhub-api/mongo.init.sh:/docker-entrypoint-initdb.d/001_init.sh:ro
+    ports:
+      - 27017:27017
+    networks:
+      - flhub-network
+networks:
+  flhub-network:
