@@ -23,7 +23,8 @@ export class RedirectToClientFilter extends BaseExceptionFilter {
 
     if (reqPath && reqPath.startsWith('/api')) {
       // API 404, serve default nest 404:
-      super.catch(exception, host);
+      // super.catch(exception, host);
+      throw exception;
     } else {
       if (fileExtRx.test(reqPath)) {
         const filePath = path.resolve(this.clientRootPath, reqPath.replace(/^\/+/, ''));

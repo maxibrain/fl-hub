@@ -17,3 +17,24 @@ mat-sidenav {
 .mat-paginator {
   background: initial;
 }
+
+mat-form-field.short {
+  .mat-form-field-infix {
+    width: 90px;
+  }
+}
+
+table {
+  mat-form-field.mat-form-field-appearance-legacy {
+    .mat-form-field-wrapper {
+      margin-bottom: -1.25em;
+      .mat-form-field-infix {
+        padding-top: 0px;
+        border-top: 0px;
+        .mat-form-field-label-wrapper {
+          display: none;
+        }
+      }
+    }
+  }
+}

@@ -9,16 +9,22 @@ import {
   MatInputModule,
   MatButtonModule,
   MatExpansionModule,
-  MatIconModule
+  MatIconModule,
+  MatSelectModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 import { NgxsModule } from '@ngxs/store';
 import { FinanciesState } from './state/financies.state';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+import { BankingComponent } from './banking/banking.component';
+import { InvoiceComponent } from './banking/invoice/invoice.component';
+import { OtpToTaxerComponent } from './banking/otp-to-taxer/otp-to-taxer.component';
 
 @NgModule({
-  declarations: [SalaryComponent],
+  declarations: [SalaryComponent, BankingComponent, InvoiceComponent, OtpToTaxerComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -27,12 +33,15 @@ import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
     NgxsModule.forFeature([FinanciesState]),
     NgxsFormPluginModule,
     NgxsStoragePluginModule,
-    MatFormFieldModule,
-    MatDividerModule,
-    MatInputModule,
-    MatIconModule,
     MatButtonModule,
-    MatExpansionModule
-  ]
+    MatDatepickerModule,
+    MatDividerModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatNativeDateModule,
+    MatSelectModule,
+  ],
 })
 export class FinanciesModule {}
