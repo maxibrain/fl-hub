@@ -4,8 +4,13 @@ import { SalaryComponent } from './salary/salary.component';
 import { BankingComponent } from './banking/banking.component';
 import { InvoiceComponent } from './banking/invoice/invoice.component';
 import { OtpToTaxerComponent } from './banking/otp-to-taxer/otp-to-taxer.component';
+import { TransactionsComponent } from './transactions/transactions.component';
 
 const routes: Routes = [
+  {
+    path: 'transactions',
+    component: TransactionsComponent,
+  },
   {
     path: 'salary',
     component: SalaryComponent,
@@ -25,7 +30,7 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'salary',
+    redirectTo: 'transactions',
   },
 ];
 

@@ -13,6 +13,9 @@ import {
   MatSelectModule,
   MatDatepickerModule,
   MatNativeDateModule,
+  MatListModule,
+  MatBottomSheetModule,
+  MatDialogModule,
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
@@ -23,9 +26,20 @@ import { BankingComponent } from './banking/banking.component';
 import { InvoiceComponent } from './banking/invoice/invoice.component';
 import { OtpToTaxerComponent } from './banking/otp-to-taxer/otp-to-taxer.component';
 import { FinanciesStateModule } from './financies.state.module';
+import { TransactionsComponent } from './transactions/transactions.component';
+import { IncomeFormGroupComponent } from './transactions/income-form-group.component';
+import { CurrencyExchangeFormGroupComponent } from './transactions/currency-exchange-form-group.component';
 
 @NgModule({
-  declarations: [SalaryComponent, BankingComponent, InvoiceComponent, OtpToTaxerComponent],
+  declarations: [
+    SalaryComponent,
+    BankingComponent,
+    InvoiceComponent,
+    OtpToTaxerComponent,
+    TransactionsComponent,
+    IncomeFormGroupComponent,
+    CurrencyExchangeFormGroupComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -34,14 +48,17 @@ import { FinanciesStateModule } from './financies.state.module';
     FinanciesStateModule,
     NgxsFormPluginModule,
     NgxsStoragePluginModule,
+    MatBottomSheetModule,
     MatButtonModule,
     MatDatepickerModule,
+    MatDialogModule,
     MatDividerModule,
     MatExpansionModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
     MatNativeDateModule,
+    MatListModule,
     MatSelectModule,
   ],
 })

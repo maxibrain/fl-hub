@@ -1,0 +1,89 @@
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let account of accounts$ | async">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ account.name }}
+      </mat-panel-title>
+      <mat-panel-description>
+        <span [class]="account.balance > 0 ? 'text-success' : account.balance < 0 ? 'text-danger' : 'text-body'">{{
+          account.balance | currency: account.currency
+        }}</span>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <table style="width: 100%">
+      <thead>
+        <tr>
+          <th>Date & Time</th>
+          <th>Amount</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let transaction of account.transactions" [class.font-italic]="transaction.pending">
+          <td>{{ transaction.dateTime | date }}</td>
+          <td [class]="transaction.amount > 0 ? 'text-success' : transaction.amount < 0 ? 'text-danger' : 'text-body'">
+            {{ transaction.amount | currency: account.currency }}
+          </td>
+          <td>{{ transaction.description }}</td>
+          <td>
+            <ng-container *ngIf="transaction.pending">
+              <button mat-button type="button" (click)="completeTransaction(transaction.id)">Complete</button>
+              <!-- <button mat-button type="button" (click)="cancelTransaction(transaction.id)">Cancel</button> -->
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<div>
+  <button mat-raised-button (click)="openTransactionSelect(transactionTypeSelector)">Add Transaction...</button>
+</div>
+
+<ng-template #transactionTypeSelector>
+  <mat-nav-list>
+    <a href="#" mat-list-item (click)="openDialog($event, incomeDialog)">
+      <span mat-line>Income</span>
+      <span mat-line>-> USD</span>
+    </a>
+
+    <a href="#" mat-list-item (click)="openDialog($event, exchangeDialog)">
+      <span mat-line>Currency Exchange</span>
+      <span mat-line>USD -> UAH</span>
+    </a>
+
+    <a href="#" mat-list-item (click)="openDialog($event, payoutDialog)">
+      <span mat-line>Payout (Salary or Dividents)</span>
+      <span mat-line>UAH -></span>
+    </a>
+  </mat-nav-list>
+</ng-template>
+
+<ng-template #incomeDialog let-dialogRef="dialogRef">
+  <h1 mat-dialog-title>Income</h1>
+  <div mat-dialog-content>
+    <app-income-form-group #incomeForm></app-income-form-group>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button matDialogClose>Cancel</button>
+    <button mat-button (click)="addIncome(dialogRef, incomeForm.value)" [disabled]="!incomeForm.valid">
+      Ok
+    </button>
+  </div>
+</ng-template>
+<ng-template #exchangeDialog let-dialogRef="dialogRef">
+  <h1 mat-dialog-title>Currency exchage</h1>
+  <div mat-dialog-content>
+    <app-currency-exchange-form-group #currencyExchangeForm></app-currency-exchange-form-group>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button matDialogClose>Cancel</button>
+    <button mat-button (click)="addCurrencyExchange(dialogRef, currencyExchangeForm.value)" [disabled]="!currencyExchangeForm.valid">
+      Ok
+    </button>
+  </div>
+</ng-template>
+<ng-template #payoutDialog let-dialogRef="dialogRef"></ng-template>
