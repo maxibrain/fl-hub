@@ -28,6 +28,14 @@ export class UpworkApiService {
     this.api.setAccessToken(config.accessToken, config.accessSecret, voidCallback);
   }
 
+  async getAuthorizationUrl(callbackUrl: string) {
+    return await this.wrapFn(this.api, 'getAuthorizationUrl')(callbackUrl).then(([url, requestToken, requestTokenSecret]) => ({
+      url,
+      requestToken,
+      requestTokenSecret,
+    }));
+  }
+
   async authorize(session: UpworkSession, token: string, verifier: string): Promise<UpworkSession> {
     if (!session || !session.requestToken || !session.requestTokenSecret) {
       throw new Error('No OAuth session.');
