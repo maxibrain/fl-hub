@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { AccountModule } from './account/account.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,6 +23,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
+    AccountModule,
     MatIconModule,
     MatButtonModule,
     MatListModule,
@@ -29,7 +31,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatToolbarModule,
     NgxsModule.forRoot([], { developmentMode: !environment.production }),
     NgxsFormPluginModule.forRoot(),
-    NgxsStoragePluginModule.forRoot({ key: ['financies.salaryForm'] }),
+    NgxsStoragePluginModule.forRoot({ key: ['financies.salaryForm', 'auth.token'] }),
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,9 +1,11 @@
-import { Controller, Post, Body, Res, Get } from '@nestjs/common';
+import { Controller, Post, Body, Res, Get, UseGuards } from '@nestjs/common';
 import { InvoiceService, InvoiceData } from './invoice.service';
 import { Response } from 'express';
 import { BillingService } from './billing.service';
+import { AuthGuard } from '../../auth';
 
 @Controller('api/banking')
+@UseGuards(AuthGuard)
 export class BankingController {
   @Post('invoice')
   async generateInvoice(@Body() data: InvoiceData, @Res() res: Response) {

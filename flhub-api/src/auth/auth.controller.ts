@@ -1,17 +1,22 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, Req, Res, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 
 @Controller('api/auth')
-export class BankingController {
+export class AuthController {
   @Get('upwork/url')
-  async getAuthorizationUrl() {
-    const res = await this.auth.getAuthorizationUrl('api/auth/upwork/callback');
+  async getAuthorizationUrl(@Query('callbackUrl') callbackUrl: string) {
+    const url = await this.auth.getAuthorizationUrl(callbackUrl);
+    return { url };
   }
 
-  @Get('upwork/callback')
-  async getBillingInfo(@Query() query: any) {
-    return await this.auth.authorize(query);
+  @Post('upwork/authorize')
+  async callback(@Body() oauthResponse: any) {
+    const session = await this.auth.authorize(oauthResponse);
+    const accessToken = this.jwt.sign(session);
+    return { accessToken };
   }
 
-  constructor(private auth: AuthService, private billing: BillingService) {}
+  constructor(private auth: AuthService, private jwt: JwtService) {}
 }

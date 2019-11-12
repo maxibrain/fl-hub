@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { UpworkApiService } from '../shared';
+import { Injectable, Logger } from '@nestjs/common';
+import { UpworkApiService, UpworkAuthorizationRequest } from '../shared';
 
 @Injectable()
 export class AuthService {
@@ -7,5 +7,9 @@ export class AuthService {
 
   getAuthorizationUrl(callbackUrl: string) {
     return this.upwork.getAuthorizationUrl(callbackUrl);
+  }
+
+  authorize(request: UpworkAuthorizationRequest) {
+    return this.upwork.authorize(request);
   }
 }
