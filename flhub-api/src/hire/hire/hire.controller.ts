@@ -1,10 +1,12 @@
-import { Controller, Get, Param, Logger, Query, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Logger, Query, Post, Body, UseGuards } from '@nestjs/common';
 import { ExportService } from '../../shared';
+import { AuthGuard } from '../../auth';
 import { UpdateCandidateStatusDto } from '../interfaces/update-candidate-status.dto';
 import { SearchCandidatesOptions, CreateSearchDto } from '../interfaces';
 import { CandidateService, SearchQueryService, ProfileService } from '../services';
 
 @Controller('api/hire')
+@UseGuards(AuthGuard)
 export class HireController {
   constructor(
     private candidates: CandidateService,

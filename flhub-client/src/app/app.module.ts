@@ -14,22 +14,24 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { SharedModule } from './shared/shared.module';
+import { AppStateModule } from './app.state.module';
+import { AuthModule } from './auth';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule,
     AppRoutingModule,
+    AppStateModule,
+    SharedModule,
+    AuthModule.forRoot(),
     MatIconModule,
     MatButtonModule,
     MatListModule,
     MatSidenavModule,
     MatToolbarModule,
-    NgxsModule.forRoot([], { developmentMode: !environment.production }),
-    NgxsFormPluginModule.forRoot(),
-    NgxsStoragePluginModule.forRoot({ key: ['financies.salaryForm'] }),
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,14 +1,23 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { UpworkApi } from 'upwork-api/lib/api';
+import { Auth, GetUserInfoResponse } from 'upwork-api/lib/routers/auth';
 import { FreelancerSearchParams, FreelancerSearchResult, Search, FreelancerProfile } from 'upwork-api/lib/routers/freelancers/search';
 import { Profile, ProfileResponse } from 'upwork-api/lib/routers/freelancers/profile';
+
+export interface UpworkAuthorizationRequest {
+  oauthToken: string;
+  oauthVerifier: string;
+}
 
 export interface UpworkSession {
   requestToken: string;
   requestTokenSecret: string;
-  accessToken: string;
-  accessSecret: string;
+  accessToken?: string;
+  accessSecret?: string;
+  user?: GetUserInfoResponse;
 }
+
+const sessions = new Map<string, UpworkSession>();
 
 @Injectable()
 export class UpworkApiService {
@@ -28,23 +37,55 @@ export class UpworkApiService {
     this.api.setAccessToken(config.accessToken, config.accessSecret, voidCallback);
   }
 
-  async authorize(session: UpworkSession, token: string, verifier: string): Promise<UpworkSession> {
-    if (!session || !session.requestToken || !session.requestTokenSecret) {
-      throw new Error('No OAuth session.');
+  async getAuthorizationUrl(callbackUrl: string): Promise<string> {
+    const api = this.api;
+    return await new Promise((resolve, reject) => {
+      api.getAuthorizationUrl(callbackUrl, (err, url, requestToken, requestTokenSecret) => {
+        if (err) {
+          return reject(err);
+        }
+        sessions.set(requestToken, { requestToken, requestTokenSecret });
+        return resolve(url);
+      });
+    });
+  }
+
+  async authorize(request: UpworkAuthorizationRequest): Promise<UpworkSession> {
+    if (!request || !request.oauthToken || !request.oauthVerifier) {
+      throw new Error('Invalid request');
     }
-    if (!verifier) {
-      throw new Error('No verifier.');
+    const session = sessions.get(request.oauthToken);
+    if (!session) {
+      throw new Error('Invalid request');
     }
-    if (session.requestToken !== token) {
-      throw new Error('Token mismatch.');
-    }
-    return await this.wrapFn(this.api, 'getAccessToken')(session.requestToken, session.requestTokenSecret, verifier).then(
-      ([accessToken, accessSecret]) => ({
-        ...session,
-        accessToken,
-        accessSecret,
+    return await new Promise<UpworkSession>((resolve, reject) => {
+      this.api.getAccessToken(session.requestToken, session.requestTokenSecret, request.oauthVerifier, (err, accessToken, accessSecret) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve({
+          ...session,
+          accessToken,
+          accessSecret,
+        });
+      });
+    }).then(result =>
+      this.getAuthenticatedUser().then(info => {
+        return { ...result, user: info };
       }),
     );
+  }
+
+  getAuthenticatedUser(): Promise<GetUserInfoResponse> {
+    const auth = new Auth(this.api);
+    return new Promise((resolve, reject) => {
+      auth.getUserInfo((err, res) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve(res);
+      });
+    });
   }
 
   searchFreelancers(params: FreelancerSearchParams): Promise<FreelancerSearchResult> {

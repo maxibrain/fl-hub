@@ -22,6 +22,7 @@ import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { BankingComponent } from './banking/banking.component';
 import { InvoiceComponent } from './banking/invoice/invoice.component';
 import { OtpToTaxerComponent } from './banking/otp-to-taxer/otp-to-taxer.component';
+import { FinanciesStateModule } from './financies.state.module';
 
 @NgModule({
   declarations: [SalaryComponent, BankingComponent, InvoiceComponent, OtpToTaxerComponent],
@@ -30,7 +31,7 @@ import { OtpToTaxerComponent } from './banking/otp-to-taxer/otp-to-taxer.compone
     FormsModule,
     ReactiveFormsModule,
     FinanciesRoutingModule,
-    NgxsModule.forFeature([FinanciesState]),
+    FinanciesStateModule,
     NgxsFormPluginModule,
     NgxsStoragePluginModule,
     MatButtonModule,
