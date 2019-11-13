@@ -15,6 +15,8 @@ export interface AuthStateModel {
   defaults: {},
 })
 export class AuthState {
+  static KEYS_TO_STORE: string[] = ['auth.token'];
+
   @Selector()
   static token(state: AuthStateModel): string | null {
     return state.token;

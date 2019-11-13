@@ -15,4 +15,6 @@ export interface FinanciesStateModel {
     },
   },
 })
-export class FinanciesState {}
+export class FinanciesState {
+  static KEYS_TO_STORE = ['financies.salaryForm'];
+}

@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../auth.service';
+import { Component } from '@angular/core';
+import { AuthService, AuthorizeAction } from '../../auth';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { AuthorizeAction } from '../state';
 import { take } from 'rxjs/operators';
 
 @Component({
