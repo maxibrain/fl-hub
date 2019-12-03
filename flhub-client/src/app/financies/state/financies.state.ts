@@ -4,7 +4,6 @@ import * as fromActions from './financies.actions';
 import { FinanciesService } from '../services/financies.service';
 import { tap } from 'rxjs/operators';
 import { patch, updateItem, append, compose } from '@ngxs/store/operators';
-import { Guid } from 'guid-typescript';
 
 export interface FinanciesStateModel {
   bankAccounts: BankAccount[];
@@ -25,7 +24,7 @@ export interface FinanciesStateModel {
 })
 export class FinanciesState {
   static KEYS_TO_STORE = ['financies.salaryForm'];
-}
+
   @Selector()
   static bankAccounts(state: FinanciesStateModel) {
     return state.bankAccounts;
@@ -69,7 +68,7 @@ export class FinanciesState {
               t => t.id === id,
               patch({
                 dateTime: () => new Date(),
-                pending: () => false,
+                pending: (): boolean => false,
               }),
             ),
           }),

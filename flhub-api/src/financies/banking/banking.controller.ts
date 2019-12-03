@@ -2,7 +2,7 @@ import { Controller, Post, Body, Res, Get, UseGuards } from '@nestjs/common';
 import { InvoiceService, InvoiceData } from './invoice.service';
 import { Response } from 'express';
 import { BillingService } from './billing.service';
-import { AuthGuard } from '../../auth';
+import { AuthGuard, AuthUser, User } from '../../auth';
 
 @Controller('api/banking')
 @UseGuards(AuthGuard)
@@ -14,8 +14,8 @@ export class BankingController {
   }
 
   @Get('billingInfo')
-  async getBillingInfo() {
-    return await this.billing.getBillingInfo();
+  async getBillingInfo(@AuthUser() { id }: User) {
+    return await this.billing.getBillingInfo(id);
   }
 
   constructor(private invoices: InvoiceService, private billing: BillingService) {}
