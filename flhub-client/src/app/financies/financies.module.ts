@@ -19,26 +19,24 @@ import {
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
-import { NgxsModule } from '@ngxs/store';
-import { FinanciesState } from './state/financies.state';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { BankingComponent } from './banking/banking.component';
 import { InvoiceComponent } from './banking/invoice/invoice.component';
-import { OtpToTaxerComponent } from './banking/otp-to-taxer/otp-to-taxer.component';
 import { FinanciesStateModule } from './financies.state.module';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { IncomeFormGroupComponent } from './transactions/income-form-group.component';
 import { CurrencyExchangeFormGroupComponent } from './transactions/currency-exchange-form-group.component';
+import { OtpComponent } from './banking/otp/otp.component';
 
 @NgModule({
   declarations: [
     SalaryComponent,
     BankingComponent,
     InvoiceComponent,
-    OtpToTaxerComponent,
     TransactionsComponent,
     IncomeFormGroupComponent,
     CurrencyExchangeFormGroupComponent,
+    OtpComponent,
   ],
   imports: [
     CommonModule,

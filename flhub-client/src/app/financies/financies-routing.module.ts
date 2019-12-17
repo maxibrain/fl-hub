@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { SalaryComponent } from './salary/salary.component';
 import { BankingComponent } from './banking/banking.component';
 import { InvoiceComponent } from './banking/invoice/invoice.component';
-import { OtpToTaxerComponent } from './banking/otp-to-taxer/otp-to-taxer.component';
+import { OtpComponent } from './banking/otp/otp.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 
 const routes: Routes = [
@@ -24,8 +24,8 @@ const routes: Routes = [
     component: InvoiceComponent,
   },
   {
-    path: 'banking/otp-to-taxer',
-    component: OtpToTaxerComponent,
+    path: 'banking/otp',
+    component: OtpComponent,
   },
   {
     path: '',

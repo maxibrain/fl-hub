@@ -37,14 +37,13 @@ export class HireController {
   }
 
   @Get('search/:query/candidates/:id')
-  async getCandidate(@Param('query') name: string, @Param('id') id: string) {
-    const query = await this.queries.findOneOrFail(name, id);
+  async getCandidate(@SearchQueryParam('query') query: SearchQuery, @Param('id') id: string) {
     return await this.candidates.get(id, query);
   }
 
   @Post('candidates/update')
-  async updateCandidates(@Body('query') name: string) {
-    const query = await this.candidates.update(name);
+  async updateCandidates(@SearchQueryParam('query') query: SearchQuery) {
+    await this.candidates.update(query);
   }
 
   @Post('candidate/status')
