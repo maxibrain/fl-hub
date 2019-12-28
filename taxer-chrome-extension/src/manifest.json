@@ -1,0 +1,21 @@
+{
+  "name": "Freelance Hub Taxer Extension",
+  "version": "1.0",
+  "description": "Automates financial operations import from Freelance Hub to Taxer",
+  "manifest_version": 2,
+  "permissions": ["activeTab", "webNavigation", "storage"],
+  "background": {
+    "scripts": ["background.js", "runtime.js"],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.taxer.ua/*"],
+      "all_frames": false,
+      "js": ["runtime.js", "jquery.slim.min.js", "content.js"]
+    }
+  ],  
+  "page_action": {
+    "default_popup": "index.html"
+  }
+}

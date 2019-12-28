@@ -1,0 +1,9 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+  <h1>
+    Welcome to {{ title }}!
+  </h1>
+  <input type="text" [value]="serverUrl$ | async" #serverUrlInput/>
+  <button (click)="setServer(serverUrlInput.value)">Set Server Url</button>
+  <button (click)="fillData(sampleData)">Fill</button>
+</div>
