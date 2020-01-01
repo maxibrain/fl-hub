@@ -2,10 +2,10 @@ import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FinanciesState } from '../state/financies.state';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
-import { BankAccount } from '../interfaces';
+import { BankAccount, Operation } from '../interfaces';
 import * as fromActions from '../state/financies.actions';
 import { MatBottomSheet, MatDialog, MatDialogRef } from '@angular/material';
-import { Income, CurrencyExchange, Operation } from '../models/operations';
+import { Income, CurrencyExchange } from '../models/operations';
 
 @Component({
   selector: 'app-transactions',

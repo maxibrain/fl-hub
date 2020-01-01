@@ -3,6 +3,8 @@ import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Transaction, Contragents } from '../../interfaces';
 import { Guid } from 'guid-typescript';
+import * as $ from 'jquery-slim';
+import { MatListOption } from '@angular/material';
 
 @Component({
   selector: 'app-otp',
@@ -29,6 +31,11 @@ export class OtpComponent {
 
       reader.readAsText(fileInput.target.files[0]);
     }
+  }
+
+  exportToTaxer(options: MatListOption[]) {
+    const transactions = options.map(o => o.value);
+    console.log(transactions);
   }
 
   private parse(html: string) {
@@ -166,7 +173,7 @@ export class OtpComponent {
       const $lastCustomerDataRow = $customerDataRows.eq(ai * 4 + 3);
       const $accountRows = $rows.slice($rows.index($lastCustomerDataRow) + 1, $rows.index($customerDataRows.eq(ai * 4 + 4)));
 
-      const transactions = [];
+      const transactions: Array<Transaction> = [];
       const $activityDates = $accountRows.find('td.s15');
       for (let i = 0; i < $activityDates.length; i++) {
         const $activityDate = $($activityDates[i]);
@@ -272,6 +279,11 @@ export class OtpComponent {
         transactions,
       };
     });
-    return { account: accounts[0], transactions: accounts.reduce((acc, a) => [...acc, ...a.transactions], []) };
+    return {
+      account: accounts[0],
+      transactions: accounts
+        .reduce<Array<Transaction>>((acc, a) => [...acc, ...a.transactions], [])
+        .sort((a, b) => (a.dateTime > b.dateTime ? 1 : -1)),
+    };
   }
 }

@@ -1,4 +1,4 @@
-import { Operation } from '../models/operations';
+import { Operation } from '../interfaces';
 
 export class ListBankAccounts {
   static readonly type = '[Financies] List Bank Accounts';
