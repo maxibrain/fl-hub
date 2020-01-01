@@ -13,6 +13,11 @@
       "matches": ["*://*.taxer.ua/*"],
       "all_frames": false,
       "js": ["runtime.js", "jquery.slim.min.js", "content.js"]
+    },
+    {
+      "matches": ["*://*.localhost/*"],
+      "all_frames": false,
+      "js": ["runtime.js", "flhub-content.js"]
     }
   ],  
   "page_action": {

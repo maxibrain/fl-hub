@@ -1,0 +1,1 @@
+document['taxer-extension'] = true;

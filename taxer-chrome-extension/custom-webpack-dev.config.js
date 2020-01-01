@@ -10,6 +10,7 @@ module.exports = {
       entries: {
         background: 'background',
         content: 'content',
+        'flhub-content': 'flhub-content',
       },
     }),
   ],
