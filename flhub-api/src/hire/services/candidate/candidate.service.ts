@@ -36,8 +36,7 @@ export class CandidateService {
     return result;
   }
 
-  async list(searchName?: string): Promise<CandidateDto[]> {
-    const searchQuery = await this.searchQueries.findOneOrFail({ where: { name: searchName }, select: ['id'] });
+  async list(searchQuery: SearchQuery): Promise<CandidateDto[]> {
     const trackers = await this.loadTrackers(searchQuery.id.toHexString());
     const profiles = await this.profiles.list(trackers.map(t => t.profileId));
     return profiles.map(
@@ -49,8 +48,7 @@ export class CandidateService {
     );
   }
 
-  async get(profileId: string, searchName?: string): Promise<CandidateDto> {
-    const searchQuery = await this.searchQueries.findOneOrFail({ where: { name: searchName }, select: ['id'] });
+  async get(profileId: string, searchQuery: SearchQuery): Promise<CandidateDto> {
     const profile = await this.profiles.get(profileId);
     const tracker = await this.loadTracker(searchQuery.id.toHexString(), profileId);
     return {
@@ -59,8 +57,7 @@ export class CandidateService {
     };
   }
 
-  async update(searchName?: string) {
-    const searchQuery = await this.searchQueries.findOneOrFail({ where: { name: searchName } });
+  async update(searchQuery: SearchQuery) {
     const profiles = await this.profiles.search(searchQuery.params);
     profiles.forEach(async profile => {
       await this.profiles.save(profile.id, profile);
@@ -73,12 +70,11 @@ export class CandidateService {
   }
 
   async updateStatus(update: UpdateCandidateStatusDto) {
-    const searchQuery = await this.searchQueries.findOneOrFail({ where: { name: update.searchName } });
     const candidate = await this.profiles.get(update.id);
     if (!candidate) {
       throw new BadRequestException();
     }
-    const patch = createCandidateStatusPatch(searchQuery.id.toHexString(), update.id, update.status, update.comment);
+    const patch = createCandidateStatusPatch(update.searchQuery.id.toHexString(), update.id, update.status, update.comment);
     await this.trackerPatches.insert(patch);
   }
 }

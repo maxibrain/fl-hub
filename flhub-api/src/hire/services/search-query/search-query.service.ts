@@ -9,14 +9,16 @@ export class SearchQueryService {
   constructor(@InjectRepository(SearchQuery) private searchQueries: MongoRepository<SearchQuery>) {}
 
   async create(data: CreateSearchDto) {
-    const query = new SearchQuery();
-    query.name = data.name;
-    query.params = data.params;
+    const query = Object.assign(new SearchQuery(), data);
     await this.searchQueries.insert(query);
     return query;
   }
 
-  async list() {
-    return await this.searchQueries.find();
+  async list(userId: string) {
+    return await this.searchQueries.find({ where: { userId } });
+  }
+
+  async findOneOrFail(name: string, userId: string) {
+    return await this.searchQueries.findOneOrFail({ where: { userId, name } });
   }
 }
