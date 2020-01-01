@@ -1,9 +1,11 @@
 import { Controller, Get, Param, Logger, Query, Post, Body, UseGuards } from '@nestjs/common';
 import { ExportService } from '../../shared';
-import { AuthGuard } from '../../auth';
+import { AuthGuard, AuthUser, User } from '../../auth';
 import { UpdateCandidateStatusDto } from '../interfaces/update-candidate-status.dto';
 import { SearchCandidatesOptions, CreateSearchDto } from '../interfaces';
 import { CandidateService, SearchQueryService, ProfileService } from '../services';
+import { SearchQueryParam } from './search-query.decorator';
+import { SearchQuery } from '../entities';
 
 @Controller('api/hire')
 @UseGuards(AuthGuard)
@@ -16,17 +18,17 @@ export class HireController {
   ) {}
 
   @Post('query')
-  async createQuery(@Body() query: CreateSearchDto) {
-    return await this.queries.create(query);
+  async createQuery(@Body() query: CreateSearchDto, @AuthUser() { id }: User) {
+    return await this.queries.create({ ...query, userId: id });
   }
 
   @Get('query')
-  async listQueries() {
-    return await this.queries.list();
+  async listQueries(@AuthUser() { id }: User) {
+    return await this.queries.list(id);
   }
 
   @Get('search/:query/candidates')
-  async listCandidates(@Param('query') query: string, @Query('format') format = 'json') {
+  async listCandidates(@SearchQueryParam('query') query: SearchQuery, @Query('format') format = 'json') {
     const result = await this.candidates.list(query);
     if (format === 'csv') {
       return this.exportService.toCsv(result);
@@ -35,12 +37,12 @@ export class HireController {
   }
 
   @Get('search/:query/candidates/:id')
-  async getCandidate(@Param('query') query: string, @Param('id') id: string) {
+  async getCandidate(@SearchQueryParam('query') query: SearchQuery, @Param('id') id: string) {
     return await this.candidates.get(id, query);
   }
 
   @Post('candidates/update')
-  async updateCandidates(@Body('query') query: string) {
+  async updateCandidates(@SearchQueryParam('query') query: SearchQuery) {
     await this.candidates.update(query);
   }
 
