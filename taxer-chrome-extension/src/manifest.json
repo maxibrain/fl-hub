@@ -1,18 +1,14 @@
 {
   "name": "Freelance Hub Taxer Extension",
-  "version": "1.0",
-  "description": "Automates financial operations import from Freelance Hub to Taxer",
+  "version": "0.9",
+  "description": "Automates financial operations import from OTP Bank to Taxer",
   "manifest_version": 2,
   "permissions": ["activeTab", "webNavigation", "storage"],
-  "background": {
-    "scripts": ["background.js", "runtime.js"],
-    "persistent": true
-  },
   "content_scripts": [
     {
       "matches": ["*://*.taxer.ua/*"],
       "all_frames": false,
-      "js": ["runtime.js", "jquery.slim.min.js", "content.js"]
+      "js": ["runtime.js", "jquery.min.js", "polyfills.js", "styles.js", "main.js", "content.js"]
     },
     {
       "matches": ["*://*.localhost/*"],

@@ -1,1 +1,1 @@
-document['taxer-extension'] = true;
+console.log('Freelance Hub Taxer Extension installed');

@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Transaction, Contragents } from '../../interfaces';
-import { Guid } from 'guid-typescript';
-import * as $ from 'jquery-slim';
-import { MatListOption } from '@angular/material';
+import { Transaction, Contragents } from '../interfaces';
+import * as $ from 'jquery';
+import { MatListOption, MatSelectionList } from '@angular/material';
 
 @Component({
   selector: 'app-otp',
@@ -14,6 +13,8 @@ import { MatListOption } from '@angular/material';
 export class OtpComponent {
   private readonly fileContent$ = new Subject<string>();
   readonly parsed$ = this.fileContent$.pipe(map(html => this.parse(html)));
+
+  @ViewChild(MatSelectionList, { static: false }) transactions: MatSelectionList;
 
   constructor() {}
 
@@ -52,7 +53,6 @@ export class OtpComponent {
       const dateParts = transaction.date.split('.');
       const dateTime = new Date(dateParts.reverse().join('-') + 'T' + (transaction.time || '00:00:00'));
       const createTransaction = () => ({
-        id: Guid.create().toString(),
         dateTime,
         reference: transaction.document.reference,
         description: transaction.description,
@@ -62,6 +62,7 @@ export class OtpComponent {
         return [
           {
             ...createTransaction(),
+            type: 'Currency Exchange',
             amount: transaction.amount.USD,
             currency: 'USD',
             contragent: Contragents.Bank,
@@ -74,6 +75,7 @@ export class OtpComponent {
         return [
           {
             ...createTransaction(),
+            type: 'Income',
             amount: transaction.amount.USD,
             contragent: Contragents.Bank,
             currency: 'USD',
@@ -91,6 +93,7 @@ export class OtpComponent {
         return [
           {
             ...createTransaction(),
+            type: 'Currency Exchange',
             amount: transaction.amount.UAH + fee,
             currency: 'UAH',
             contragent: Contragents.Bank,
@@ -101,6 +104,7 @@ export class OtpComponent {
           },
           {
             ...createTransaction(),
+            type: 'Expense',
             amount: -fee,
             currency: 'UAH',
             contragent: Contragents.Bank,
@@ -113,6 +117,7 @@ export class OtpComponent {
         return [
           {
             ...createTransaction(),
+            type: 'Expense',
             amount: transaction.amount.UAH,
             currency: 'UAH',
             contragent: Contragents.Bank,
@@ -124,6 +129,7 @@ export class OtpComponent {
         return [
           {
             ...createTransaction(),
+            type: 'Expense',
             amount: transaction.amount.UAH,
             currency: 'UAH',
             contragent: Contragents.PersonalAccount,
@@ -139,6 +145,7 @@ export class OtpComponent {
         return [
           {
             ...createTransaction(),
+            type: 'Expense',
             amount: transaction.amount.UAH,
             currency: 'UAH',
             contragent: Contragents.TaxDepartment,
@@ -174,8 +181,8 @@ export class OtpComponent {
 
       const transactions: Array<Transaction> = [];
       const $activityDates = $accountRows.find('td.s15');
-      for (let i = 0; i < $activityDates.length; i++) {
-        const $activityDate = $($activityDates[i]);
+      for (const activityDate of $activityDates) {
+        const $activityDate = $(activityDate);
         const $transactionsRows = $activityDate
           .parent()
           .nextUntil('tr:has(td.s25)')
@@ -242,9 +249,7 @@ export class OtpComponent {
                 reference: $firstRowCells.eq(2).text(),
               },
               contragent: {
-                account: $firstRowCells
-                  .eq(1)
-                  .text(),
+                account: $firstRowCells.eq(1).text(),
                 bankName: $transactionRows
                   .eq(1)
                   .children()
@@ -255,9 +260,7 @@ export class OtpComponent {
                 UAH: uahAmount,
                 USD: usdAmount,
               },
-              description: $firstRowCells
-                .last()
-                .text(),
+              description: $firstRowCells.last().text(),
             };
 
             transactions.push(...mapStatementItemToTransactions(transaction));

@@ -22,7 +22,7 @@
       </mat-list-option>
     </mat-selection-list>
     
-    <button mat-button (click)="exportToTaxer(transactions.selectedOptions.selected)">Export to Taxer</button>
+    <app-taxer [transactions]="getTransactions(transactions.selectedOptions.selected)"></app-taxer>
 
   </mat-expansion-panel>
 </mat-accordion>

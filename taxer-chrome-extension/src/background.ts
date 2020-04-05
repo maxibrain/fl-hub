@@ -4,11 +4,18 @@ function onTaxerFinanceOperationsPageLoad(details: chrome.webNavigation.WebNavig
   chrome.pageAction.show(details.tabId);
   createWebSocketConnection(event => {
     const receivedMsg = JSON.parse(event.data);
-    chrome.tabs.sendMessage(details.tabId, receivedMsg, response => {
-      if (websocket) {
-        websocket.send(response);
-      }
-    });
+    switch (receivedMsg.type) {
+      case 'ping':
+        websocket.send(JSON.stringify({ type: 'ping' }));
+        break;
+      case 'addOperationRequest':
+        chrome.tabs.sendMessage(details.tabId, receivedMsg.data, response => {
+          if (websocket) {
+            websocket.send(JSON.stringify({ ...response, type: 'addOperationResponse' }));
+          }
+        });
+        break;
+    }
   });
 }
 
@@ -26,7 +33,9 @@ function createWebSocketConnection(messageHandler) {
       };
       if (!tryConnect()) {
         const interval = setInterval(() => {
-          if (tryConnect()) { clearInterval(interval); }
+          if (tryConnect()) {
+            clearInterval(interval);
+          }
         }, 1000);
       }
     });

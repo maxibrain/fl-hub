@@ -3,7 +3,5 @@
   <h1>
     Welcome to {{ title }}!
   </h1>
-  <input type="text" [value]="serverUrl$ | async" #serverUrlInput/>
-  <button (click)="setServer(serverUrlInput.value)">Set Server Url</button>
-  <button (click)="fillData(sampleData)">Fill</button>
+  <app-otp></app-otp>
 </div>

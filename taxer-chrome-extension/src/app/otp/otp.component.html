@@ -1,0 +1,18 @@
+<h3>Import OTP Bank statement</h3>
+<p>Select a file to import</p>
+<input type="file" (change)="onFileChanged($event)" />
+
+<mat-selection-list *ngIf="parsed$ | async as data" #transactions>
+  <mat-list-option *ngFor="let transaction of data.transactions" [value]="transaction">
+    <div class="d-flex justify-content-between">
+      <div>{{ transaction.dateTime | date }}: {{ transaction.description }}</div>
+      <div>{{ transaction.amount | currency: transaction.currency }}</div>
+    </div>
+    <!-- <div>
+      <div>Contragent: {{ transaction.contragent.account }}</div>
+      <div>Description: {{ transaction.description }}</div>
+    </div> -->
+  </mat-list-option>
+</mat-selection-list>
+
+<app-taxer *ngIf="transactions?.selectedOptions" [transactions]="getTransactions(transactions.selectedOptions.selected)"></app-taxer>

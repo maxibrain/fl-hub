@@ -27,6 +27,7 @@ import { TransactionsComponent } from './transactions/transactions.component';
 import { IncomeFormGroupComponent } from './transactions/income-form-group.component';
 import { CurrencyExchangeFormGroupComponent } from './transactions/currency-exchange-form-group.component';
 import { OtpComponent } from './banking/otp/otp.component';
+import { TaxerComponent } from './banking/taxer/taxer.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { OtpComponent } from './banking/otp/otp.component';
     IncomeFormGroupComponent,
     CurrencyExchangeFormGroupComponent,
     OtpComponent,
+    TaxerComponent,
   ],
   imports: [
     CommonModule,

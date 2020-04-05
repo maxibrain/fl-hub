@@ -2,7 +2,7 @@
   "name": "flhub",
   "version": "0.0.0",
   "scripts": {
-    "dev": "concurrently -k -n \"Server,Client\" -c \"yellow.bold,cyan.bold\" \"cd flhub-api && npm run start:dev\" \"cd flhub-client && npm run start\"",
+    "dev": "concurrently -k -n \"Server,Client,Taxer\" -c \"yellow.bold,cyan.bold,green.bold\" \"cd flhub-api && npm run start:dev\" \"cd flhub-client && npm run start\" \"cd taxer-chrome-extension && npm run start\"",
     "debug": "concurrently -k -n \"Server,Client\" -c \"yellow.bold,cyan.bold\" \"cd flhub-api && npm run start:debug\" \"cd flhub-client && npm run start\"",
     "postinstall": "concurrently --kill-others-on-fail -n \"Server,Client\" -c \"yellow.bold,cyan.bold\" \"cd flhub-api && npm i && npm run build\" \"cd flhub-client && npm i && npm run build\"",
     "start": "cd flhub-api/dist && node -r dotenv/config -r tsconfig-paths/register main.js"
