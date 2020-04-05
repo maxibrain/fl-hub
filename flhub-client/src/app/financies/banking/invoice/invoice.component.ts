@@ -11,6 +11,10 @@ import { mergeMap, switchMap, map, startWith, pluck, tap, shareReplay } from 'rx
   styleUrls: ['./invoice.component.scss'],
 })
 export class InvoiceComponent implements OnInit {
+  private readonly via = {
+    upwork: 'Payment via Upwork Global Inc.',
+    payoneer: 'Payment via Payoneer Inc.'
+  };
   private readonly refresh$ = new Subject();
   private readonly billingInfo$: Observable<any>;
   readonly clients$: Observable<Client[]>;
@@ -96,7 +100,7 @@ export class InvoiceComponent implements OnInit {
         terms:
           'Scope of Services: software development.\r\n' +
           'Terms of payments and acceptance of Services:\r\n' +
-          (this.client.viaUpwork ? 'Payment via Upwork Global Inc. ' : '') +
+          (this.client.via ? this.via[this.client.via] + ' ' : '') +
           'Post payment of 100% upon the services delivery.\r\n' +
           'All charges of correspondent banks are at the Supplier’s expenses. Payment hereof at the same time is the evidence ' +
           'of the service delivery, acceptance thereof in full scope and the confirmation of final mutual installments between ' +

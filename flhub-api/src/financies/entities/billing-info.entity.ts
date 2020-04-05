@@ -1,9 +1,11 @@
 import { Entity, Index, Column, ObjectID, ObjectIdColumn } from 'typeorm';
 
+export type PaymentSystem = 'upwork' | 'payoneer';
+
 export interface Client {
   name: string;
   billingInfo: string;
-  viaUpwork: boolean;
+  via?: PaymentSystem;
 }
 
 @Entity()

@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
+export type PaymentSystem = 'upwork' | 'payoneer';
+
 export interface Client {
   name: string;
   billingInfo: string;
-  viaUpwork: boolean;
+  via?: PaymentSystem;
 }
 
 export interface BillingInfo {
